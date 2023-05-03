@@ -1,0 +1,49 @@
+name: hebron_pay
+description: A new Flutter project.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.19.5 <3.0.0'
+
+dependencies:
+  cupertino_icons: ^1.0.2
+  device_info_plus: ^8.2.0
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.2
+  flutter_native_splash: ^2.2.19
+  flutter_svg: ^2.0.4
+  pinput: ^2.2.31
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: "assets/images/splash_image.png"
+  android: true
+  ios: true
+  web: false
+  android_12:
+    color: "#ffffff"
+    image: "assets/images/splash_image.png"
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/icons/
+
+  fonts:
+    - family: Fira Code
+      fonts:
+        - asset: assets/fonts/FiraCode-VariableFont_wght.ttf
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-VariableFont_wght.ttf
