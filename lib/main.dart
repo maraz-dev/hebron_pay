@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hebron_pay/features/authentication/presentation/pages/forgot_password.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
+import 'package:hebron_pay/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:hebron_pay/features/onboarding/presentation/pages/onboarding.dart';
 import 'package:hebron_pay/theme.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -25,6 +27,8 @@ class HebronPay extends StatelessWidget {
           OnboardingScreen.id: (context) => const OnboardingScreen(),
           LoginScreen.id: (context) => const LoginScreen(),
           SignUpScreen.id: (context) => const SignUpScreen(),
+          ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
+          DashBoard.id: (context) => const DashBoard()
         });
   }
 }

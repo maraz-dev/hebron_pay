@@ -49,6 +49,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   /// Boolean to show Validate Password Container
   //bool _showValidatePassword = false;
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _userNameController.dispose();
+    _emailController.dispose();
+    _phoneNumberController.dispose();
+    _passwordController.dispose();
+    _confirmPassController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: SvgPicture.asset(backArrow),
+          icon: SvgPicture.asset(backArrowIcon),
         ),
       ),
       body: const AuthenticationBackground(),

@@ -49,8 +49,8 @@ class _HpPasswordFormFieldState extends State<HpPasswordFormField> {
               hintText: widget.hintText!,
               suffixIcon: IconButton(
                 icon: widget.obsureText == true
-                    ? SvgPicture.asset(eyeSlash)
-                    : SvgPicture.asset(eye),
+                    ? SvgPicture.asset(eyeSlashIcon)
+                    : SvgPicture.asset(eyeIcon),
                 onPressed: () {
                   setState(() {
                     widget.obsureText == true

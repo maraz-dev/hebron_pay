@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/size_config.dart';
 
@@ -64,6 +65,51 @@ class InActiveGeneralButton extends StatelessWidget {
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LogOutButton extends StatelessWidget {
+  const LogOutButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+  });
+
+  final String? text;
+  final Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPressed,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: kErrorColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(vertical: getProportionateScreenHeight(15)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  text!,
+                  style: const TextStyle(
+                      color: kWhiteColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(width: getProportionateScreenWidth(50)),
+              SvgPicture.asset(logOutIcon)
+            ],
           ),
         ),
       ),

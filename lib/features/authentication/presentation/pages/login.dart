@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hebron_pay/constants.dart';
+import 'package:hebron_pay/features/authentication/presentation/pages/forgot_password.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
+import 'package:hebron_pay/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:hebron_pay/size_config.dart';
 import '../../../../core/widgets/widgets.dart';
 
@@ -26,6 +28,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   /// Boolean for Password suffix Icon
   final bool _showPassword = true;
+
+  @override
+  void dispose() {
+    _emailAddressController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: SvgPicture.asset(backArrow),
+          icon: SvgPicture.asset(backArrowIcon),
         ),
       ),
       body: const AuthenticationBackground(),
@@ -103,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
                       onTap: () =>
-                          Navigator.pushNamed(context, SignUpScreen.id),
+                          Navigator.pushNamed(context, ForgotPasswordScreen.id),
                       child: Text(
                         'Forgot Password?',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -114,7 +124,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: getProportionateScreenHeight(30)),
 
                   /// Sign In Button
-                  GeneralButton(text: 'Sign In', onPressed: () {})
+                  GeneralButton(
+                      text: 'Sign In',
+                      onPressed: () {
+                        Navigator.pushNamed(context, DashBoard.id);
+                      })
                 ],
               ),
             )

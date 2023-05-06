@@ -21,8 +21,14 @@ class _OTPVerificationState extends State<OTPVerification> {
 
   @override
   void initState() {
-    //print(widget.emailAddress);
     super.initState();
+    debugPrint(widget.emailAddress);
+  }
+
+  @override
+  void dispose() {
+    _otpController.dispose();
+    super.dispose();
   }
 
   @override
@@ -32,7 +38,7 @@ class _OTPVerificationState extends State<OTPVerification> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: SvgPicture.asset(backArrow),
+          icon: SvgPicture.asset(backArrowIcon),
         ),
       ),
       body: const AuthenticationBackground(),
