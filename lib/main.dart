@@ -4,6 +4,11 @@ import 'package:hebron_pay/features/authentication/presentation/pages/login.dart
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
 import 'package:hebron_pay/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:hebron_pay/features/onboarding/presentation/pages/onboarding.dart';
+import 'package:hebron_pay/features/profile/presentation/pages/change_password.dart';
+import 'package:hebron_pay/features/profile/presentation/pages/change_pin.dart';
+import 'package:hebron_pay/features/profile/presentation/pages/help_and_support.dart';
+import 'package:hebron_pay/features/profile/presentation/pages/privacy_policy.dart';
+import 'package:hebron_pay/features/profile/presentation/pages/terms_and_condition.dart';
 import 'package:hebron_pay/theme.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -28,7 +33,13 @@ class HebronPay extends StatelessWidget {
           LoginScreen.id: (context) => const LoginScreen(),
           SignUpScreen.id: (context) => const SignUpScreen(),
           ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
-          DashBoard.id: (context) => const DashBoard()
+          DashBoard.id: (context) => const DashBoard(),
+          ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
+          ChangePinScreen.id: (context) => const ChangePinScreen(),
+          TermsAndConditionScreen.id: (context) =>
+              const TermsAndConditionScreen(),
+          PrivacyPolicyScreen.id: (context) => const PrivacyPolicyScreen(),
+          HelpAndSupportScreen.id: (context) => const HelpAndSupportScreen()
         });
   }
 }
