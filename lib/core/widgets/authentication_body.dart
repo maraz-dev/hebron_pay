@@ -12,6 +12,7 @@ class AuthenticationBody extends StatelessWidget {
     return BottomSheet(
         onClosing: () {},
         enableDrag: false,
+        backgroundColor: Colors.transparent,
         builder: (context) {
           return Container(
             color: kPrimaryColor,

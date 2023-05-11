@@ -67,6 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       extendBodyBehindAppBar: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
