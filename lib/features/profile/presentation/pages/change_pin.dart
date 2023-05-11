@@ -50,6 +50,57 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
           child: Form(
             child: Column(
               children: [
+                SizedBox(height: getProportionateScreenHeight(20)),
+
+                /// Enter the PIN the First Time
+                Text(
+                  'Enter your New 4-digit PIN',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.bold, color: kDarkGrey),
+                ),
+                SizedBox(height: getProportionateScreenHeight(20)),
+                Pinput(
+                  onCompleted: (value) {
+                    setState(() {
+                      //_otpController.text = value;
+                      //print(_otpController.text);
+                    });
+                  },
+                  length: 4,
+                  obscureText: true,
+                  textInputAction: TextInputAction.done,
+                  defaultPinTheme: kDefaultPin(context),
+                  focusedPinTheme: kFocusedPin(context),
+                ),
+                SizedBox(height: getProportionateScreenHeight(20)),
+
+                /// Enter the PIN the Second Time
+                Text(
+                  'CONFIRM your New 4-digit PIN',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.bold, color: kDarkGrey),
+                ),
+                SizedBox(height: getProportionateScreenHeight(20)),
+                Pinput(
+                  onCompleted: (value) {
+                    setState(() {
+                      //_otpController.text = value;
+                      //print(_otpController.text);
+                    });
+                  },
+                  length: 4,
+                  obscureText: true,
+                  textInputAction: TextInputAction.done,
+                  defaultPinTheme: kDefaultPin(context),
+                  focusedPinTheme: kFocusedPin(context),
+                ),
+                SizedBox(height: getProportionateScreenHeight(30)),
+
+                /// Change PIN Button
                 GeneralButton(
                   text: 'Change Pin',
                   onPressed: () {},
@@ -107,6 +158,7 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
                     });
                   },
                   length: 4,
+                  obscureText: true,
                   textInputAction: TextInputAction.done,
                   defaultPinTheme: kDefaultPin(context),
                   focusedPinTheme: kFocusedPin(context),
