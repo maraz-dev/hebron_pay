@@ -8,6 +8,7 @@ import 'package:hebron_pay/features/profile/presentation/pages/change_password.d
 import 'package:hebron_pay/features/profile/presentation/pages/change_pin.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/help_and_support.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/privacy_policy.dart';
+import 'package:hebron_pay/features/profile/presentation/pages/profile.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/terms_and_condition.dart';
 import 'package:hebron_pay/theme.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -34,6 +35,7 @@ class HebronPay extends StatelessWidget {
           SignUpScreen.id: (context) => const SignUpScreen(),
           ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
           DashBoard.id: (context) => const DashBoard(),
+          ProfileScreen.id: (context) => const ProfileScreen(),
           ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
           ChangePinScreen.id: (context) => const ChangePinScreen(),
           TermsAndConditionScreen.id: (context) =>

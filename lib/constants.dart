@@ -19,6 +19,7 @@ String onboardingOne = "assets/images/onboarding1.png";
 String onboardingTwo = "assets/images/onboarding2.png";
 String onboardingThree = "assets/images/onboarding3.png";
 String profileAvatar = "assets/images/profileAvatar.png";
+String scanImage = "assets/images/scanImage.png";
 
 /// Assets - Icons
 String backArrowIcon = "assets/images/icons/backArrow.svg";
