@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hebron_pay/size_config.dart';
 import 'package:pinput/pinput.dart';
 
+/// Symbols
+String nairaSymbol = '₦';
+
 /// Colors
 const kBackgroundColor = Color(0xFFFFFFFF);
 const kPrimaryColor = Color(0xFF3C0945);
@@ -35,6 +38,7 @@ String helpAndSupportIcon = "assets/images/icons/helpIcon.svg";
 String termsAndConditionIcon = "assets/images/icons/termsIcon.svg";
 String arrowRightIcon = "assets/images/icons/arrowRight.svg";
 String privacyIcon = "assets/images/icons/privacyPolicyIcon.svg";
+String notificationReadIcon = "asssets/images/icons/notificationRead.svg";
 
 /// PinThemes for default OTP
 PinTheme kDefaultPin(BuildContext context) {

@@ -116,3 +116,37 @@ class LogOutButton extends StatelessWidget {
     );
   }
 }
+
+/// Transaction Button
+class TransactionButton extends StatelessWidget {
+  const TransactionButton(
+      {super.key, required this.text, required this.onPressed});
+
+  final String? text;
+  final Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPressed,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: kWhiteColor, borderRadius: BorderRadius.circular(10)),
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(vertical: getProportionateScreenHeight(10)),
+          child: Center(
+            child: Text(
+              text!,
+              style: const TextStyle(
+                  color: kPrimaryColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
