@@ -48,3 +48,5 @@ flutter:
     - family: Nunito
       fonts:
         - asset: assets/fonts/Nunito-VariableFont_wght.ttf
+        - asset: assets/fonts/Nunito-Black.ttf
+          weight: 700

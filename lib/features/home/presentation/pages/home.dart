@@ -22,9 +22,12 @@ class HomeScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.displaySmall,
         ),
         actions: [
-          GestureDetector(
-            onTap: () {},
-            child: SvgPicture.asset(notificationReadIcon),
+          Padding(
+            padding: EdgeInsets.only(right: getProportionateScreenWidth(20)),
+            child: GestureDetector(
+              onTap: () {},
+              child: SvgPicture.asset(notificationReadIcon),
+            ),
           )
         ],
       ),

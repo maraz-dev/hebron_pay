@@ -38,7 +38,7 @@ String helpAndSupportIcon = "assets/images/icons/helpIcon.svg";
 String termsAndConditionIcon = "assets/images/icons/termsIcon.svg";
 String arrowRightIcon = "assets/images/icons/arrowRight.svg";
 String privacyIcon = "assets/images/icons/privacyPolicyIcon.svg";
-String notificationReadIcon = "asssets/images/icons/notificationRead.svg";
+String notificationReadIcon = "assets/images/icons/notificationRead.svg";
 
 /// PinThemes for default OTP
 PinTheme kDefaultPin(BuildContext context) {
@@ -46,7 +46,7 @@ PinTheme kDefaultPin(BuildContext context) {
       width: getProportionateScreenWidth(55),
       height: getProportionateScreenHeight(60),
       textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-          color: kBlackColor, fontSize: 20, fontWeight: FontWeight.bold),
+          color: kBlackColor, fontSize: 20, fontWeight: FontWeight.w700),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: kPrimaryColor)));
@@ -58,7 +58,7 @@ PinTheme kFocusedPin(BuildContext context) {
       width: getProportionateScreenWidth(55),
       height: getProportionateScreenHeight(60),
       textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-          color: kPrimaryColor, fontSize: 20, fontWeight: FontWeight.bold),
+          color: kPrimaryColor, fontSize: 20, fontWeight: FontWeight.w700),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: kPrimaryColor, width: 3)));

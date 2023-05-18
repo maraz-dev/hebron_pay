@@ -41,19 +41,19 @@ TextTheme textTheme() {
   return const TextTheme(
     displayLarge: TextStyle(
       fontSize: 28,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w700,
       letterSpacing: -0.4,
       color: kPrimaryColor,
     ),
     displayMedium: TextStyle(
       fontSize: 24,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w700,
       letterSpacing: -0.4,
       color: kPrimaryColor,
     ),
     displaySmall: TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w700,
       letterSpacing: 0,
       color: kPrimaryColor,
     ),
