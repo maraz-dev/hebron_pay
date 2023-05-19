@@ -32,7 +32,7 @@ class HpTextFormField extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .bodyLarge!
-              .copyWith(color: kPrimaryColor, fontWeight: FontWeight.bold),
+              .copyWith(color: kPrimaryColor, fontWeight: FontWeight.w400),
         ),
         SizedBox(height: getProportionateScreenHeight(9)),
         TextFormField(

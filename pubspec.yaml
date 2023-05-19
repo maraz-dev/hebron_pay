@@ -16,6 +16,7 @@ dependencies:
   flutter_native_splash: ^2.2.19
   flutter_secure_storage: ^8.0.0
   flutter_svg: ^2.0.4
+  intl: ^0.18.1
   pinput: ^2.2.31
 
 flutter_native_splash:
@@ -45,8 +46,12 @@ flutter:
     - family: Fira Code
       fonts:
         - asset: assets/fonts/FiraCode-VariableFont_wght.ttf
+        - asset: assets/fonts/FiraCode-Bold.ttf
+          weight: 700
     - family: Nunito
       fonts:
         - asset: assets/fonts/Nunito-VariableFont_wght.ttf
+        - asset: assets/fonts/Nunito-Medium.ttf
+          weight: 400
         - asset: assets/fonts/Nunito-Black.ttf
           weight: 700

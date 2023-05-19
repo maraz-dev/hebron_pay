@@ -5,6 +5,10 @@ import 'package:pinput/pinput.dart';
 /// Symbols
 String nairaSymbol = '₦';
 
+/// Texts
+String successTranText =
+    "Great! You've successfully deposited $nairaSymbol 5,000 into your account";
+
 /// Colors
 const kBackgroundColor = Color(0xFFFFFFFF);
 const kPrimaryColor = Color(0xFF3C0945);
@@ -16,6 +20,7 @@ const kLightPurple = Color(0xFF6A5C6C);
 const kTransparentPurple = Color(0x3C094566);
 const kTransparentBlack = Color(0x81000000);
 const kErrorColor = Color(0xFF610606);
+const kErrorColorTransparent = Color.fromARGB(151, 97, 6, 6);
 
 /// Assets - Images
 String onboardingOne = "assets/images/onboarding1.png";
@@ -23,6 +28,8 @@ String onboardingTwo = "assets/images/onboarding2.png";
 String onboardingThree = "assets/images/onboarding3.png";
 String profileAvatar = "assets/images/profileAvatar.png";
 String scanImage = "assets/images/scanImage.png";
+String successTransaction = "assets/images/succesTransaction.png";
+String failedTransaction = "assets/images/failedTransaction.png";
 
 /// Assets - Icons
 String backArrowIcon = "assets/images/icons/backArrow.svg";
@@ -39,6 +46,9 @@ String termsAndConditionIcon = "assets/images/icons/termsIcon.svg";
 String arrowRightIcon = "assets/images/icons/arrowRight.svg";
 String privacyIcon = "assets/images/icons/privacyPolicyIcon.svg";
 String notificationReadIcon = "assets/images/icons/notificationRead.svg";
+String debitIcon = "assets/images/icons/debitIcon.svg";
+String creditIcon = "assets/images/icons/creditIcon.svg";
+String pendingIcon = "assets/images/icons/pendingIcon.svg";
 
 /// PinThemes for default OTP
 PinTheme kDefaultPin(BuildContext context) {

@@ -39,7 +39,7 @@ class _HpPasswordFormFieldState extends State<HpPasswordFormField> {
           widget.title!,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                 color: kPrimaryColor,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w400,
               ),
         ),
         SizedBox(height: getProportionateScreenHeight(9)),

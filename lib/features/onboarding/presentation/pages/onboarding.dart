@@ -89,7 +89,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         style: const TextStyle(
                             fontSize: 24,
                             fontFamily: 'Fira Code',
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             color: kPrimaryColor),
                         textAlign: TextAlign.center,
                       )

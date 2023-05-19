@@ -112,7 +112,7 @@ class HomeScreen extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .displaySmall!
-                      .copyWith(fontSize: 16),
+                      .copyWith(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 GestureDetector(
                   onTap: () {},
@@ -121,10 +121,45 @@ class HomeScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.displaySmall!.copyWith(
                         fontSize: 16,
                         decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w400,
                         color: kDarkGrey),
                   ),
                 )
               ],
+            ),
+            SizedBox(height: getProportionateScreenHeight(10)),
+            Container(
+              padding: EdgeInsets.symmetric(
+                  vertical: getProportionateScreenHeight(10)),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: kLightGrey)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SvgPicture.asset(pendingIcon),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Chicken and Chips',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(color: kDarkGrey),
+                      ),
+                      const Text('The Time')
+                    ],
+                  ),
+                  Text(
+                    '- Amount',
+                    style: Theme.of(context)
+                        .textTheme
+                        .displaySmall!
+                        .copyWith(color: kErrorColorTransparent, fontSize: 16),
+                  )
+                ],
+              ),
             ),
             SizedBox(height: getProportionateScreenHeight(16)),
 
@@ -137,7 +172,7 @@ class HomeScreen extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .displaySmall!
-                      .copyWith(fontSize: 16),
+                      .copyWith(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 GestureDetector(
                   onTap: () {},
@@ -146,6 +181,7 @@ class HomeScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.displaySmall!.copyWith(
                         fontSize: 16,
                         decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w400,
                         color: kDarkGrey),
                   ),
                 )

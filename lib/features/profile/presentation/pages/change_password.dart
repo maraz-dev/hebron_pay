@@ -41,11 +41,12 @@ class ChangePasswordScreen extends StatelessWidget {
               SizedBox(height: getProportionateScreenHeight(40)),
 
               /// Current Password
-              HpTextFormField(
+              HpPasswordFormField(
                   controller: _currentPasswordController,
                   hintText: 'Enter your Current Password',
                   title: 'Current Password',
                   onChanged: (value) {},
+                  obsureText: true,
                   textInputAction: TextInputAction.next,
                   textInputType: TextInputType.text,
                   validator: (validator) {
@@ -54,11 +55,12 @@ class ChangePasswordScreen extends StatelessWidget {
               SizedBox(height: getProportionateScreenHeight(12)),
 
               /// Re Enter Password
-              HpTextFormField(
+              HpPasswordFormField(
                   controller: _currentPasswordController,
                   hintText: 'Enter your New Password',
                   title: 'New Password',
                   onChanged: (value) {},
+                  obsureText: true,
                   textInputAction: TextInputAction.next,
                   textInputType: TextInputType.text,
                   validator: (validator) {
@@ -67,11 +69,12 @@ class ChangePasswordScreen extends StatelessWidget {
               SizedBox(height: getProportionateScreenHeight(12)),
 
               /// Re Enter Password
-              HpTextFormField(
+              HpPasswordFormField(
                   controller: _currentPasswordController,
                   hintText: 'Re-enter your New Password',
                   title: 'Confirm Password',
                   onChanged: (value) {},
+                  obsureText: true,
                   textInputAction: TextInputAction.next,
                   textInputType: TextInputType.text,
                   validator: (validator) {
