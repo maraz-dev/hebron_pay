@@ -29,7 +29,7 @@ class FailedTransactionScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                   horizontal: getProportionateScreenWidth(60)),
               child: Text(
-                successTranText,
+                'UnsuccessTranText',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),

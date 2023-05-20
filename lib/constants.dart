@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hebron_pay/size_config.dart';
 import 'package:pinput/pinput.dart';
+import 'package:intl/intl.dart';
 
-/// Symbols
-String nairaSymbol = '₦';
-
-/// Texts
-String successTranText =
-    "Great! You've successfully deposited $nairaSymbol 5,000 into your account";
+/// Function to format the amount to a Currency with the Naira symbol
+String nairaAmount(double amount) {
+  var nairaFormat = NumberFormat.currency(locale: 'en-NG', symbol: '₦');
+  var formattedAmount = nairaFormat.format(amount);
+  return formattedAmount;
+}
 
 /// Colors
 const kBackgroundColor = Color(0xFFFFFFFF);
@@ -19,6 +20,7 @@ const kDarkGrey = Color(0xFF4B4B4E);
 const kLightPurple = Color(0xFF6A5C6C);
 const kTransparentPurple = Color(0x3C094566);
 const kTransparentBlack = Color(0x81000000);
+const kGreenColor = Color(0xFF27983A);
 const kErrorColor = Color(0xFF610606);
 const kErrorColorTransparent = Color.fromARGB(151, 97, 6, 6);
 
@@ -49,6 +51,7 @@ String notificationReadIcon = "assets/images/icons/notificationRead.svg";
 String debitIcon = "assets/images/icons/debitIcon.svg";
 String creditIcon = "assets/images/icons/creditIcon.svg";
 String pendingIcon = "assets/images/icons/pendingIcon.svg";
+String timeIcon = "assets/images/icons/timeIcon.svg";
 
 /// PinThemes for default OTP
 PinTheme kDefaultPin(BuildContext context) {

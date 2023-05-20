@@ -39,7 +39,7 @@ class ProfileButton extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .displaySmall!
-                      .copyWith(fontSize: 16),
+                      .copyWith(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 SvgPicture.asset(arrowRightIcon)
               ],
