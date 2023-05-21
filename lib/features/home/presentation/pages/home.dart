@@ -3,8 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
+import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
+import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
 import 'package:hebron_pay/features/home/presentation/pages/transaction_receipt.dart';
+import 'package:hebron_pay/features/home/presentation/pages/withdraw.dart';
 import 'package:hebron_pay/features/home/presentation/widgets/transaction_card.dart';
 import 'package:hebron_pay/size_config.dart';
 
@@ -84,7 +87,9 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: TransactionButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, DepositScreen.id);
+                          },
                           text: 'Deposit',
                         ),
                       ),
@@ -92,7 +97,9 @@ class HomeScreen extends StatelessWidget {
                       Expanded(
                         child: TransactionButton(
                           text: 'Withdraw',
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, WithdrawScreen.id);
+                          },
                         ),
                       )
                     ],
@@ -108,7 +115,9 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, GenerateTicket.id);
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(
                           horizontal: getProportionateScreenWidth(10),

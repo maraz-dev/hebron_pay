@@ -3,8 +3,11 @@ import 'package:hebron_pay/features/authentication/presentation/pages/forgot_pas
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
 import 'package:hebron_pay/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
+import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
 import 'package:hebron_pay/features/home/presentation/pages/transaction_receipt.dart';
+import 'package:hebron_pay/features/home/presentation/pages/withdraw.dart';
 import 'package:hebron_pay/features/onboarding/presentation/pages/onboarding.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/change_password.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/change_pin.dart';
@@ -46,7 +49,10 @@ class HebronPay extends StatelessWidget {
           HelpAndSupportScreen.id: (context) => const HelpAndSupportScreen(),
           PendingTransactionReceipt.id: (context) =>
               const PendingTransactionReceipt(),
-          TransactionReceipt.id: (context) => const TransactionReceipt()
+          TransactionReceipt.id: (context) => const TransactionReceipt(),
+          GenerateTicket.id: (context) => const GenerateTicket(),
+          DepositScreen.id: (context) => const DepositScreen(),
+          WithdrawScreen.id: (context) => const WithdrawScreen(),
         });
   }
 }
