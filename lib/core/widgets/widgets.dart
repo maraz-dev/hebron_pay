@@ -5,3 +5,5 @@ export 'authentication_background.dart';
 export 'authentication_body.dart';
 export 'failed_transaction.dart';
 export 'success_transaction.dart';
+export 'ticket_details_properties.dart';
+export 'ticket_divider.dart';

@@ -153,6 +153,45 @@ class LogOutButton extends StatelessWidget {
   }
 }
 
+/// Delete Button
+class DeleteReceiptButton extends StatelessWidget {
+  const DeleteReceiptButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+  });
+
+  final String? text;
+  final Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPressed,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: kErrorColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(vertical: getProportionateScreenHeight(15)),
+          child: Center(
+            child: Text(
+              text!,
+              style: const TextStyle(
+                  color: kWhiteColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Transaction Button
 class TransactionButton extends StatelessWidget {
   const TransactionButton(

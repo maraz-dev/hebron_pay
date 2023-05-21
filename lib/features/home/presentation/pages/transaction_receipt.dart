@@ -6,9 +6,9 @@ import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
 import 'package:hebron_pay/size_config.dart';
 
-class PendingTransactionReceipt extends StatelessWidget {
-  const PendingTransactionReceipt({super.key});
-  static const id = "/pendingTransactionReceipt";
+class TransactionReceipt extends StatelessWidget {
+  const TransactionReceipt({super.key});
+  static const id = "/transactionReceipt";
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class PendingTransactionReceipt extends StatelessWidget {
           ),
         ),
         title: Text(
-          'Pending Ticket Details',
+          'Ticket Details',
           style: Theme.of(context).textTheme.displaySmall,
         ),
       ),
@@ -72,7 +72,6 @@ class PendingTransactionReceipt extends StatelessWidget {
             SizedBox(height: getProportionateScreenHeight(30)),
             GeneralButton(text: 'Download Receipt', onPressed: () {}),
             SizedBox(height: getProportionateScreenHeight(10)),
-            DeleteReceiptButton(text: 'Delete Receipt', onPressed: () {})
           ],
         ),
       ),

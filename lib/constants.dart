@@ -56,6 +56,8 @@ String pendingIcon = "assets/images/icons/pendingIcon.svg";
 String timeIcon = "assets/images/icons/timeIcon.svg";
 String ticketIcon = "assets/images/icons/ticketIcon.svg";
 String eodIcon = "assets/images/icons/eodIcon.svg";
+String downloadIcon = "assets/images/icons/downloadIcon.svg";
+String trashIcon = "assets/images/icons/trashIcon.svg";
 
 /// PinThemes for default OTP
 PinTheme kDefaultPin(BuildContext context) {
