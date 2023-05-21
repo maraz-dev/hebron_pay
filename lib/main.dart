@@ -3,6 +3,7 @@ import 'package:hebron_pay/features/authentication/presentation/pages/forgot_pas
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
 import 'package:hebron_pay/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
 import 'package:hebron_pay/features/onboarding/presentation/pages/onboarding.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/change_password.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/change_pin.dart';
@@ -41,7 +42,9 @@ class HebronPay extends StatelessWidget {
           TermsAndConditionScreen.id: (context) =>
               const TermsAndConditionScreen(),
           PrivacyPolicyScreen.id: (context) => const PrivacyPolicyScreen(),
-          HelpAndSupportScreen.id: (context) => const HelpAndSupportScreen()
+          HelpAndSupportScreen.id: (context) => const HelpAndSupportScreen(),
+          PendingTransactionReceipt.id: (context) =>
+              const PendingTransactionReceipt()
         });
   }
 }

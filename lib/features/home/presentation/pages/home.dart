@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
+import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
 import 'package:hebron_pay/features/home/presentation/widgets/transaction_card.dart';
 import 'package:hebron_pay/size_config.dart';
 
@@ -35,7 +36,7 @@ class HomeScreen extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: getProportionateScreenWidth(20),
-            vertical: getProportionateScreenHeight(20)),
+            vertical: getProportionateScreenHeight(10)),
         child: Column(
           children: [
             /// Balcance, Withdraw and Deposit Box
@@ -101,12 +102,87 @@ class HomeScreen extends StatelessWidget {
             SizedBox(height: getProportionateScreenHeight(16)),
 
             /// Ticket and EOD Button
-            SizedBox(height: getProportionateScreenHeight(16)),
+            SizedBox(height: getProportionateScreenHeight(10)),
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: getProportionateScreenWidth(10),
+                          vertical: getProportionateScreenHeight(5)),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: kPrimaryColor,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SvgPicture.asset(ticketIcon),
+                          Text(
+                            'Generate \nTicket',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                          SvgPicture.asset(
+                            arrowRightIcon,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: getProportionateScreenWidth(15)),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: getProportionateScreenWidth(10),
+                          vertical: getProportionateScreenHeight(5)),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: kPrimaryColor,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SvgPicture.asset(eodIcon),
+                          Text(
+                            'Generate \nE O D',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                          SvgPicture.asset(
+                            arrowRightIcon,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
 
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    SizedBox(height: getProportionateScreenHeight(15)),
+
                     /// Pending Payments
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -136,11 +212,17 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: getProportionateScreenHeight(10)),
-                    PendingTransactionCard(
-                      ticketDescription: 'Chicken and Chips',
-                      ticketAmount: nairaAmount(1000),
-                      timeCreated: '8:55PM',
-                      dateCreated: '25-10-2022',
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, PendingTransactionReceipt.id);
+                      },
+                      child: PendingTransactionCard(
+                        ticketDescription: 'Chicken and Chips',
+                        ticketAmount: nairaAmount(1000),
+                        timeCreated: '8:55PM',
+                        dateCreated: '25-10-2022',
+                      ),
                     ),
                     SizedBox(height: getProportionateScreenHeight(10)),
                     PendingTransactionCard(
@@ -219,6 +301,7 @@ class HomeScreen extends StatelessWidget {
                       timeCreated: '5:45PM',
                       dateCreated: '25-10-2022',
                     ),
+                    SizedBox(height: getProportionateScreenHeight(100))
                   ],
                 ),
               ),

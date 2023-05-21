@@ -32,6 +32,8 @@ String profileAvatar = "assets/images/profileAvatar.png";
 String scanImage = "assets/images/scanImage.png";
 String successTransaction = "assets/images/succesTransaction.png";
 String failedTransaction = "assets/images/failedTransaction.png";
+String qrSampleImage = "assets/images/qrSample.png";
+String qrSample = "assets/images/qrSample.png";
 
 /// Assets - Icons
 String backArrowIcon = "assets/images/icons/backArrow.svg";
@@ -52,6 +54,8 @@ String debitIcon = "assets/images/icons/debitIcon.svg";
 String creditIcon = "assets/images/icons/creditIcon.svg";
 String pendingIcon = "assets/images/icons/pendingIcon.svg";
 String timeIcon = "assets/images/icons/timeIcon.svg";
+String ticketIcon = "assets/images/icons/ticketIcon.svg";
+String eodIcon = "assets/images/icons/eodIcon.svg";
 
 /// PinThemes for default OTP
 PinTheme kDefaultPin(BuildContext context) {
