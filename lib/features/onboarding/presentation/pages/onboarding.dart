@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
@@ -35,6 +36,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    const secureStorage = FlutterSecureStorage();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -42,7 +44,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         backgroundColor: Colors.transparent,
         actions: [
           GestureDetector(
-            onTap: () => Navigator.popAndPushNamed(context, LoginScreen.id),
+            onTap: () async {
+              Navigator.popAndPushNamed(context, LoginScreen.id);
+
+              /// Write to the Device that the User has done the onboarding already
+              await secureStorage.write(
+                  key: 'onboardingCompleted', value: 'true');
+            },
             child: const Padding(
               padding: EdgeInsets.only(top: 10, right: 30),
               child: Text(
@@ -114,9 +122,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 text: currentIndex == contents.length - 1
                     ? 'Get Started'
                     : 'Next',
-                onPressed: () {
+                onPressed: () async {
                   if (currentIndex == contents.length - 1) {
-                    Navigator.pushNamed(context, SignUpScreen.id);
+                    Navigator.popAndPushNamed(context, SignUpScreen.id);
+
+                    /// Write to the Device that the User has done the onboarding already
+                    await secureStorage.write(
+                        key: 'onboardingCompleted', value: 'true');
                   }
                   _pageController!.nextPage(
                       duration: const Duration(milliseconds: 200),

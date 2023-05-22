@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/forgot_password.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
@@ -18,22 +19,28 @@ import 'package:hebron_pay/features/profile/presentation/pages/terms_and_conditi
 import 'package:hebron_pay/theme.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-void main(List<String> args) {
+void main(List<String> args) async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   FlutterNativeSplash.remove();
-  runApp(const HebronPay());
+  FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  String? onboardingDone =
+      await secureStorage.read(key: 'onboardingCompleted') ?? 'false';
+  runApp(HebronPay(
+    onboardingDone: onboardingDone,
+  ));
 }
 
 class HebronPay extends StatelessWidget {
-  const HebronPay({super.key});
-
+  const HebronPay({super.key, required this.onboardingDone});
+  final String onboardingDone;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: themeData(),
-        initialRoute: OnboardingScreen.id,
+        initialRoute:
+            onboardingDone == 'true' ? LoginScreen.id : OnboardingScreen.id,
         routes: {
           OnboardingScreen.id: (context) => const OnboardingScreen(),
           LoginScreen.id: (context) => const LoginScreen(),
