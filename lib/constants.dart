@@ -32,8 +32,8 @@ String profileAvatar = "assets/images/profileAvatar.png";
 String scanImage = "assets/images/scanImage.png";
 String successTransaction = "assets/images/succesTransaction.png";
 String failedTransaction = "assets/images/failedTransaction.png";
-String qrSampleImage = "assets/images/qrSample.png";
 String qrSample = "assets/images/qrSample.png";
+String whiteLogo = "assets/images/whiteLogo.png";
 
 /// Assets - Icons
 String backArrowIcon = "assets/images/icons/backArrow.svg";

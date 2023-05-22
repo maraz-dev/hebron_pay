@@ -11,18 +11,26 @@ class AuthenticationBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: getProportionateScreenHeight(20)),
-        const Center(
-            child: Text(
-          'HEBRONPAY',
-          style: TextStyle(
-              color: kWhiteColor,
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Fira Code'),
-        )),
+        Align(
+            alignment: Alignment.topCenter,
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: getProportionateScreenWidth(150)),
+                child: Image.asset(whiteLogo),
+              ),
+            )),
         SizedBox(height: getProportionateScreenHeight(55)),
       ],
     );
   }
 }
+
+// Text(
+//           'HEBRONPAY',
+//           style: TextStyle(
+//               color: kWhiteColor,
+//               fontSize: 36,
+//               fontWeight: FontWeight.bold,
+//               fontFamily: 'Fira Code'),
+//         )
