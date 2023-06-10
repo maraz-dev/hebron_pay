@@ -18,7 +18,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   /// [GlobalKey] to Validate the Sign In form
-  final GlobalKey _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
 
   /// The [TextEditingController] for the Email Address TextField
   final TextEditingController _emailAddressController = TextEditingController();
@@ -91,7 +91,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       textInputAction: TextInputAction.next,
                       textInputType: TextInputType.text,
                       validator: (value) {
-                        return null;
+                        String pattern =
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+                        if (value!.isEmpty) {
+                          return 'E-mail field cannot be empty';
+                        } else {
+                          RegExp regExp = RegExp(pattern);
+                          if (regExp.hasMatch(value)) {
+                            return null;
+                          } else {
+                            return 'Please use a VALID E-mail address';
+                          }
+                        }
                       }),
                   SizedBox(height: getProportionateScreenHeight(10)),
 
@@ -104,6 +115,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     textInputAction: TextInputAction.next,
                     textInputType: TextInputType.text,
                     validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Password field can't be empty";
+                      }
                       return null;
                     },
                     obsureText: _showPassword,
@@ -129,6 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   GeneralButton(
                       text: 'Sign In',
                       onPressed: () {
+                        if (!_formKey.currentState!.validate()) return;
                         Navigator.pushNamed(context, DashBoard.id);
                       })
                 ],

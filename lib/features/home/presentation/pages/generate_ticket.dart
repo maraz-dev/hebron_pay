@@ -14,7 +14,7 @@ class GenerateTicket extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// [GlobalKey] to Validate the Sign In form
-    final GlobalKey _formKey = GlobalKey();
+    final GlobalKey<FormState> _formKey = GlobalKey();
 
     /// The [TextEditingController] for the Description TextField
     final TextEditingController _descriptionController =

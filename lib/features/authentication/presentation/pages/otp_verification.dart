@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
+import 'package:hebron_pay/features/home/presentation/pages/transaction_receipt.dart';
 import 'package:hebron_pay/size_config.dart';
 import 'package:pinput/pinput.dart';
 
@@ -18,6 +19,8 @@ class OTPVerification extends StatefulWidget {
 class _OTPVerificationState extends State<OTPVerification> {
   /// A [TextEditingController] for the OTP field
   final TextEditingController _otpController = TextEditingController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
 
   @override
   void initState() {
@@ -44,79 +47,93 @@ class _OTPVerificationState extends State<OTPVerification> {
       body: const AuthenticationBackground(),
       bottomSheet: AuthenticationBody(
         body: SingleChildScrollView(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
+            child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                  child: Text(
+                'OTP Verification',
+                style: Theme.of(context).textTheme.displayMedium,
+              )),
+              Center(
                 child: Text(
-              'OTP Verification',
-              style: Theme.of(context).textTheme.displayMedium,
-            )),
-            Center(
-              child: Text(
-                "An OTP code has been sent to your email",
+                  "An OTP code has been sent to your email",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(height: getProportionateScreenHeight(30)),
+
+              /// OTP Textfields
+              Center(
+                child: Pinput(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "PIN cannot be empty";
+                    }
+                    return null;
+                  },
+                  onCompleted: (value) {
+                    setState(() {
+                      _otpController.text = value;
+                      //print(_otpController.text);
+                    });
+                  },
+                  length: 5,
+                  textInputAction: TextInputAction.done,
+                  defaultPinTheme: kDefaultPin(context),
+                  focusedPinTheme: kFocusedPin(context),
+                ),
+              ),
+              SizedBox(height: getProportionateScreenHeight(25)),
+
+              /// Timer
+              Text(
+                '00:00',
                 style: Theme.of(context)
                     .textTheme
-                    .bodySmall!
-                    .copyWith(fontWeight: FontWeight.bold),
+                    .displaySmall!
+                    .copyWith(color: kErrorColor),
               ),
-            ),
-            SizedBox(height: getProportionateScreenHeight(30)),
 
-            /// OTP Textfields
-            Center(
-              child: Pinput(
-                onCompleted: (value) {
-                  setState(() {
-                    _otpController.text = value;
-                    //print(_otpController.text);
-                  });
-                },
-                length: 5,
-                textInputAction: TextInputAction.done,
-                defaultPinTheme: kDefaultPin(context),
-                focusedPinTheme: kFocusedPin(context),
-              ),
-            ),
-            SizedBox(height: getProportionateScreenHeight(25)),
-
-            /// Timer
-            Text(
-              '00:00',
-              style: Theme.of(context)
-                  .textTheme
-                  .displaySmall!
-                  .copyWith(color: kErrorColor),
-            ),
-
-            /// Resend OTP Button
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "I didn’t receive any code. ",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  GestureDetector(
-                    onTap: null,
-                    child: Text(
-                      'Resend Code',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: kPrimaryColor, fontWeight: FontWeight.bold),
+              /// Resend OTP Button
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "I didn’t receive any code. ",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
-                  )
-                ],
+                    GestureDetector(
+                      onTap: null,
+                      child: Text(
+                        'Resend Code',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: kPrimaryColor, fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: getProportionateScreenHeight(50)),
+              SizedBox(height: getProportionateScreenHeight(50)),
 
-            /// General Button
-            GeneralButton(text: 'Continue', onPressed: () {})
-          ],
+              /// General Button
+              GeneralButton(
+                  text: 'Continue',
+                  onPressed: () {
+                    if (!_formKey.currentState!.validate()) return;
+                    Navigator.pushNamed(context, TransactionReceipt.id);
+                  })
+            ],
+          ),
         )),
       ),
     );
