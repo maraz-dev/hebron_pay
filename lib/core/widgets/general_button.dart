@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/size_config.dart';
 
 /// Normal General Button
 class GeneralButton extends StatelessWidget {
-  const GeneralButton({super.key, required this.text, required this.onPressed});
+  const GeneralButton(
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      this.isLoading = false});
 
   final String? text;
   final Function()? onPressed;
+  final bool? isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +28,18 @@ class GeneralButton extends StatelessWidget {
           padding:
               EdgeInsets.symmetric(vertical: getProportionateScreenHeight(15)),
           child: Center(
-            child: Text(
-              text!,
-              style: const TextStyle(
-                  color: kWhiteColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
+            child: isLoading!
+                ? SpinKitThreeBounce(
+                    color: kWhiteColor,
+                    size: getProportionateScreenWidth(25),
+                  )
+                : Text(
+                    text!,
+                    style: const TextStyle(
+                        color: kWhiteColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
           ),
         ),
       ),

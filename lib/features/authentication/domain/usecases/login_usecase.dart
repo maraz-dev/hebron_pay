@@ -4,7 +4,7 @@ import 'package:hebron_pay/features/authentication/domain/repositories/login_rep
 class LoginUsecase {
   final LoginRepository repository;
 
-  LoginUsecase(this.repository);
+  LoginUsecase({required this.repository});
 
   Future<LoginResponseModel> call(Map<String, dynamic> mapBody) async {
     return await repository.login(mapBody);

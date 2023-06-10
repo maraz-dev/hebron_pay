@@ -10,7 +10,11 @@ class LoginRepoImpl implements LoginRepository {
   final FlutterSecureStorage secureStorage;
   final NetworkInfo networkInfo;
 
-  LoginRepoImpl(this.dataSource, this.secureStorage, this.networkInfo);
+  LoginRepoImpl({
+    required this.dataSource,
+    required this.secureStorage,
+    required this.networkInfo,
+  });
   @override
   Future<LoginResponseModel> login(Map<String, dynamic> mapBody) async {
     if (await networkInfo.isConnected) {
@@ -26,6 +30,7 @@ class LoginRepoImpl implements LoginRepository {
         );
 
         if (res.message != 'success' && res.error != null) {
+          print('Error 1');
           throw (res.error['message']);
         } else {
           print(res.message);
@@ -37,6 +42,7 @@ class LoginRepoImpl implements LoginRepository {
           return userData;
         }
       } on Exception catch (e) {
+        print('Error 2');
         throw (e);
       }
     } else {
