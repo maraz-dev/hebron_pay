@@ -1,8 +1,12 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
+import 'package:hebron_pay/features/authentication/data/models/login_response_model.dart';
+import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
+import 'package:hebron_pay/features/home/data/models/balance_model.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
@@ -14,8 +18,28 @@ import 'package:hebron_pay/size_config.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../widgets/pending_transaction_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  LoginResponseModel? loginResponseModel;
+  FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+
+  Future<void> getUserDetails() async {
+    String userInfo = await secureStorage.read(key: 'userData') ?? '';
+    loginResponseModel = loginResponseModelFromJson(userInfo);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +48,7 @@ class HomeScreen extends StatelessWidget {
         centerTitle: false,
         automaticallyImplyLeading: false,
         title: Text(
-          'Welcome, Emeka',
+          'Welcome, ${loginResponseModel!.firstName}',
           style: Theme.of(context).textTheme.displaySmall,
         ),
         actions: [
@@ -43,7 +67,7 @@ class HomeScreen extends StatelessWidget {
             vertical: getProportionateScreenHeight(10)),
         child: Column(
           children: [
-            /// Balcance, Withdraw and Deposit Box
+            /// Balance, Withdraw and Deposit Box
             Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(

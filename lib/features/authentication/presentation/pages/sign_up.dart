@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/otp_verification.dart';
+import 'package:hebron_pay/features/profile/presentation/pages/terms_and_condition.dart';
 import 'package:hebron_pay/size_config.dart';
 
 import '../../../../core/widgets/widgets.dart';
@@ -281,6 +283,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     children: [
                                       TextSpan(
                                         text: " Terms and Conditions\n",
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap =
+                                              () => TermsAndConditionScreen.id,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium!

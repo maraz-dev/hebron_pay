@@ -53,5 +53,5 @@ class LoginEntity extends Equatable {
       required this.accessFailedCount});
 
   @override
-  List<Object?> get props => [token];
+  List<Object?> get props => [token, firstName];
 }

@@ -1,23 +1,21 @@
 import 'dart:convert';
 
-import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
+import '../../domain/entities/create_account_entity.dart';
 
-LoginResponseModel loginResponseModelFromJson(String str) =>
-    LoginResponseModel.fromJson(json.decode(str));
+CreateAccountResponseModel createAccountResponseModelFromJson(String str) =>
+    CreateAccountResponseModel.fromJson(json.decode(str));
 
-String loginResponseModelToJson(LoginResponseModel data) =>
+String createAccountResponseModelToJson(CreateAccountResponseModel data) =>
     json.encode(data.toJson());
 
-class LoginResponseModel extends LoginEntity {
-  // final String token;
-  // final String tokenUser;
-  // final DateTime expiration;
+class CreateAccountResponseModel extends CreateAccountEntity {
   // final String firstName;
   // final String lastName;
   // final String gender;
   // final String dateofBirth;
   // final bool isOtpVerified;
   // final bool isKycVerified;
+  // final int subAccountId;
   // final String id;
   // final String userName;
   // final String normalizedUserName;
@@ -34,16 +32,14 @@ class LoginResponseModel extends LoginEntity {
   // final bool lockoutEnabled;
   // final int accessFailedCount;
 
-  const LoginResponseModel({
-    required super.token,
-    required super.tokenUser,
-    required super.expiration,
+  const CreateAccountResponseModel({
     required super.firstName,
     required super.lastName,
     required super.gender,
     required super.dateofBirth,
     required super.isOtpVerified,
     required super.isKycVerified,
+    required super.subAccountId,
     required super.id,
     required super.userName,
     required super.normalizedUserName,
@@ -61,17 +57,15 @@ class LoginResponseModel extends LoginEntity {
     required super.accessFailedCount,
   });
 
-  factory LoginResponseModel.fromJson(Map<String, dynamic> json) =>
-      LoginResponseModel(
-        token: json["token"],
-        tokenUser: json["tokenUser"],
-        expiration: DateTime.parse(json["expiration"]),
+  factory CreateAccountResponseModel.fromJson(Map<String, dynamic> json) =>
+      CreateAccountResponseModel(
         firstName: json["firstName"],
         lastName: json["lastName"],
         gender: json["gender"],
         dateofBirth: json["dateofBirth"],
         isOtpVerified: json["isOtpVerified"],
         isKycVerified: json["isKycVerified"],
+        subAccountId: json["subAccountId"],
         id: json["id"],
         userName: json["userName"],
         normalizedUserName: json["normalizedUserName"],
@@ -90,15 +84,13 @@ class LoginResponseModel extends LoginEntity {
       );
 
   Map<String, dynamic> toJson() => {
-        "token": token,
-        "tokenUser": tokenUser,
-        "expiration": expiration.toIso8601String(),
         "firstName": firstName,
         "lastName": lastName,
         "gender": gender,
         "dateofBirth": dateofBirth,
         "isOtpVerified": isOtpVerified,
         "isKycVerified": isKycVerified,
+        "subAccountId": subAccountId,
         "id": id,
         "userName": userName,
         "normalizedUserName": normalizedUserName,

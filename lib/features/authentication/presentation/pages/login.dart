@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hebron_pay/constants.dart';
-import 'package:hebron_pay/features/authentication/presentation/cubit/login_cubit.dart';
+import 'package:hebron_pay/features/authentication/presentation/bloc/login_cubit/login_cubit.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/forgot_password.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
 import 'package:hebron_pay/features/dashboard/presentation/pages/dashboard.dart';
@@ -143,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         textInputAction: TextInputAction.next,
                         textInputType: TextInputType.text,
                         validator: (value) {
-                          if (value!.isEmpty) {
+                          if (value!.toString().isEmpty) {
                             return "Password field can't be empty";
                           }
                           return null;
@@ -175,7 +174,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       GeneralButton(
                           text: 'Sign In',
                           isLoading: _isLoading,
-                          onPressed: _submitLogin)
+                          onPressed: () {
+                            _submitLogin();
+                          })
                     ],
                   ),
                 )
@@ -188,6 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _submitLogin() async {
+    FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
     await BlocProvider.of<LoginCubit>(context).submitLogin(
         email: _emailAddressController.text.trim(),

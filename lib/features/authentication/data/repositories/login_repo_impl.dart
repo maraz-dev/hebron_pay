@@ -31,11 +31,13 @@ class LoginRepoImpl implements LoginRepository {
 
         if (res.message != 'success' && res.error != null) {
           print('Error 1');
+          print(res.message);
           throw (res.error['message']);
         } else {
           print(res.message);
-          //await secureStorage.write(key: 'token', value: res.data['token']);
+          await secureStorage.write(key: 'userToken', value: res.data['token']);
           var userData = LoginResponseModel.fromJson(res.data);
+          // Store the User Data
           await secureStorage.write(
               key: 'userData', value: json.encode(userData.toJson()));
 
@@ -43,7 +45,7 @@ class LoginRepoImpl implements LoginRepository {
         }
       } on Exception catch (e) {
         print('Error 2');
-        throw (e);
+        rethrow;
       }
     } else {
       throw "You're not connected to the Internet";

@@ -11,7 +11,7 @@ class ResponseModel extends ResponseEntity {
     return ResponseModel(
       data: json['data'],
       message: json['message'],
-      error: json['error']['message'],
+      error: json['error'],
     );
   }
 
