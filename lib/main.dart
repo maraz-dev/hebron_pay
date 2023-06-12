@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hebron_pay/features/authentication/presentation/cubit/login_cubit.dart';
+import 'package:hebron_pay/features/authentication/presentation/bloc/login_cubit/login_cubit.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/forgot_password.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
