@@ -56,8 +56,6 @@ class HebronPay extends StatelessWidget {
             LoginScreen.id: (context) => const LoginScreen(),
             SignUpScreen.id: (context) => const SignUpScreen(),
             ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
-            DashBoard.id: (context) => const DashBoard(),
-            ProfileScreen.id: (context) => const ProfileScreen(),
             ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
             ChangePinScreen.id: (context) => const ChangePinScreen(),
             TermsAndConditionScreen.id: (context) =>

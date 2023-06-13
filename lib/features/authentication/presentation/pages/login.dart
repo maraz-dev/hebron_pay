@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hebron_pay/constants.dart';
+import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/authentication/presentation/bloc/login_cubit/login_cubit.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/forgot_password.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
@@ -19,6 +20,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  LoginEntity? userDetails;
+
   /// [GlobalKey] to Validate the Sign In form
   final GlobalKey<FormState> _formKey = GlobalKey();
 
@@ -57,7 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
       bottomSheet: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            Navigator.pushNamed(context, DashBoard.id);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return DashBoard(loggedInUser: userDetails!);
+            }));
           }
           if (state is LoginFailure) {
             final exception = (state).errorMessage;
@@ -191,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submitLogin() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
-    await BlocProvider.of<LoginCubit>(context).submitLogin(
+    userDetails = await BlocProvider.of<LoginCubit>(context).submitLogin(
         email: _emailAddressController.text.trim(),
         password: _passwordController.text);
   }

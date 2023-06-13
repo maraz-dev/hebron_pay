@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hebron_pay/constants.dart';
+import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/change_password.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/change_pin.dart';
@@ -11,11 +12,18 @@ import 'package:hebron_pay/size_config.dart';
 
 import '../../../../core/widgets/widgets.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key, required this.loggedInUser});
 
   static const id = "/profileScreen";
 
+  final LoginEntity loggedInUser;
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +53,7 @@ class ProfileScreen extends StatelessWidget {
 
               /// User Name
               Text(
-                'Emeka Chukwudi',
+                '${widget.loggedInUser.firstName} ${widget.loggedInUser.lastName}',
                 style: Theme.of(context).textTheme.displaySmall,
               ),
 

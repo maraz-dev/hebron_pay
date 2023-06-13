@@ -3,14 +3,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
+import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/home/presentation/pages/home.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/profile.dart';
 import 'package:hebron_pay/features/scan/presentation/pages/scan.dart';
 import 'package:hebron_pay/size_config.dart';
 
 class DashBoard extends StatefulWidget {
-  const DashBoard({super.key});
+  const DashBoard({super.key, required this.loggedInUser});
   static const id = "/dashboard";
+  final LoginEntity loggedInUser;
 
   @override
   State<DashBoard> createState() => _DashBoardState();
@@ -20,17 +22,17 @@ class _DashBoardState extends State<DashBoard> {
   /// Variable to hold the current screen
   int _pageIndex = 0;
 
-  /// Variable to hold all the screens
-  final List _screens = [
-    const HomeScreen(),
-    const ScanScreen(),
-    const ProfileScreen()
-  ];
   @override
   Widget build(BuildContext context) {
+    /// Variable to hold all the screens
+    final List screens = [
+      HomeScreen(loggedInUser: widget.loggedInUser),
+      const ScanScreen(),
+      ProfileScreen(loggedInUser: widget.loggedInUser)
+    ];
     return Scaffold(
       body: Stack(children: [
-        _screens.elementAt(_pageIndex),
+        screens.elementAt(_pageIndex),
         Padding(
           padding: EdgeInsets.symmetric(
               horizontal: getProportionateScreenWidth(40),

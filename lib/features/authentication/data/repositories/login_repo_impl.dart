@@ -1,8 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hebron_pay/core/network/network_info.dart';
 import 'package:hebron_pay/features/authentication/data/datasources/login_remote.dart';
 import 'package:hebron_pay/features/authentication/data/models/login_response_model.dart';
+import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/authentication/domain/repositories/login_repo.dart';
 
 class LoginRepoImpl implements LoginRepository {
@@ -16,7 +19,7 @@ class LoginRepoImpl implements LoginRepository {
     required this.networkInfo,
   });
   @override
-  Future<LoginResponseModel> login(Map<String, dynamic> mapBody) async {
+  Future<LoginEntity> login(Map<String, dynamic> mapBody) async {
     if (await networkInfo.isConnected) {
       try {
         String email = mapBody['email'];
@@ -43,7 +46,7 @@ class LoginRepoImpl implements LoginRepository {
 
           return userData;
         }
-      } on Exception catch (e) {
+      } on Exception {
         print('Error 2');
         rethrow;
       }

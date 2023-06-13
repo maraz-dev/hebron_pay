@@ -19,28 +19,14 @@ import '../../../../core/widgets/widgets.dart';
 import '../widgets/pending_transaction_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.loggedInUser});
+  final LoginEntity loggedInUser;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  LoginResponseModel? loginResponseModel;
-  FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
-  Future<void> getUserDetails() async {
-    String userInfo = await secureStorage.read(key: 'userData') ?? '';
-    loginResponseModel = loginResponseModelFromJson(userInfo);
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getUserDetails();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: false,
         automaticallyImplyLeading: false,
         title: Text(
-          'Welcome, ${loginResponseModel!.firstName}',
+          'Welcome, ${widget.loggedInUser.firstName}',
           style: Theme.of(context).textTheme.displaySmall,
         ),
         actions: [
