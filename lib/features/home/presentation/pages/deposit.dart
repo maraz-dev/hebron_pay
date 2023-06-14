@@ -6,18 +6,23 @@ import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
 import 'package:hebron_pay/size_config.dart';
 
-class DepositScreen extends StatelessWidget {
+class DepositScreen extends StatefulWidget {
   const DepositScreen({super.key});
 
   static const id = "/depositScreen";
 
   @override
-  Widget build(BuildContext context) {
-    /// [GlobalKey] to Validate the Sign In form
-    final GlobalKey<FormState> _formKey = GlobalKey();
+  State<DepositScreen> createState() => _DepositScreenState();
+}
 
-    /// The [TextEditingController] for the Amount TextField
-    final TextEditingController _amountController = TextEditingController();
+class _DepositScreenState extends State<DepositScreen> {
+  /// [GlobalKey] to Validate the Sign In form
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  /// The [TextEditingController] for the Amount TextField
+  final TextEditingController _amountController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

@@ -14,6 +14,11 @@ import 'package:hebron_pay/features/home/data/datasource/balance_remote.dart';
 import 'package:hebron_pay/features/home/data/repository/balance_repo_impl.dart';
 import 'package:hebron_pay/features/home/domain/repository/balance_repo.dart';
 import 'package:hebron_pay/features/home/domain/usecase/balance_usecase.dart';
+import 'package:hebron_pay/features/profile/data/datasources/change_password_remote.dart';
+import 'package:hebron_pay/features/profile/data/repositories/change_password_repo_impl.dart';
+import 'package:hebron_pay/features/profile/domain/repositories/change_password_repo.dart';
+import 'package:hebron_pay/features/profile/domain/usecases/change_password_usecase.dart';
+import 'package:hebron_pay/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import 'features/authentication/presentation/bloc/login_cubit/login_cubit.dart';
@@ -27,6 +32,8 @@ Future<void> init() async {
   );
   sl.registerFactory<SignUpCubit>(
       () => SignUpCubit(createAccountUsecase: sl.call()));
+  sl.registerFactory<ProfileCubit>(
+      () => ProfileCubit(changePasswordUsecase: sl.call()));
 
   ///Usecases
   sl.registerLazySingleton<LoginUsecase>(
@@ -35,6 +42,8 @@ Future<void> init() async {
       () => BalanceUsecase(balanceRepository: sl.call()));
   sl.registerLazySingleton<CreateAccountUsecase>(
       () => CreateAccountUsecase(createAccountRepo: sl.call()));
+  sl.registerLazySingleton<ChangePasswordUsecase>(
+      () => ChangePasswordUsecase(repository: sl.call()));
 
   ///Repositories
   sl.registerLazySingleton<LoginRepository>(() => LoginRepoImpl(
@@ -45,6 +54,8 @@ Future<void> init() async {
       networkInfo: sl.call()));
   sl.registerLazySingleton<CreateAccountRepo>(() =>
       CreateAccountRepoImpl(networkInfo: sl.call(), dataSource: sl.call()));
+  sl.registerLazySingleton<ChangePasswordRepo>(() => ChangePasswordRepoImpl(
+      remoteDatasource: sl.call(), networkInfo: sl.call()));
 
   ///Datasources
   sl.registerLazySingleton<LoginRemoteDataSource>(
@@ -53,6 +64,8 @@ Future<void> init() async {
       () => BalanceRemoteDataImpl());
   sl.registerLazySingleton<CreateAccountRemoteDataSource>(
       () => CreateAccountRemoteDataSourceImpl());
+  sl.registerLazySingleton<ChangePasswordRemote>(
+      () => ChangePasswordRemoteImpl());
 
   ///Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());

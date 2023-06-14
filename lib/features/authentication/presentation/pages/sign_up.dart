@@ -6,6 +6,7 @@ import 'package:hebron_pay/features/authentication/presentation/pages/login.dart
 import 'package:hebron_pay/features/authentication/presentation/pages/otp_verification.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/terms_and_condition.dart';
 import 'package:hebron_pay/size_config.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/widgets/widgets.dart';
 
@@ -49,8 +50,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
   /// Boolean for Terms and Conditions
   bool? _isAgreed = false;
 
+  /// Is Loading bool
+  bool _isLoading = false;
+
   /// Boolean to show Validate Password Container
   //bool _showValidatePassword = false;
+
+  /// Gender List
+  List<String> genders = ['Male', 'Female'];
+
+  /// Selected Gender
+  String? _seletedGender;
+
+  late DateTime selectedDate = DateTime.now();
+
+  final TextEditingController _dateController = TextEditingController();
+
+  ///
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        initialDatePickerMode: DatePickerMode.day,
+        firstDate: DateTime(2015),
+        lastDate: DateTime(2101));
+    if (picked != null) {
+      setState(() {
+        selectedDate = picked;
+        _dateController.text = DateFormat.yMd().format(selectedDate);
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -132,6 +162,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Form(
                       key: _formKey,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           /// First Name
                           HpTextFormField(
@@ -191,6 +222,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               hintText: '08012345678',
                               title: 'Phone Number',
                               onChanged: (value) {},
+                              maxLines: 11,
                               textInputAction: TextInputAction.next,
                               textInputType: TextInputType.phone,
                               validator: (value) {
@@ -200,7 +232,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           /// Date Of Birth
                           HpTextFormField(
-                              controller: _firstNameController,
+                              controller: _dateController,
                               hintText: 'Pick your Date of Birth',
                               title: 'Date of Birth',
                               onChanged: (value) {},
@@ -211,16 +243,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               }),
                           SizedBox(height: getProportionateScreenHeight(10)),
 
-                          /// Email Address
-                          HpTextFormField(
-                              controller: _firstNameController,
-                              hintText: 'Select Gender',
-                              title: 'Gender',
-                              onChanged: (value) {},
-                              textInputAction: TextInputAction.next,
-                              textInputType: TextInputType.emailAddress,
-                              validator: (value) {
-                                return null;
+                          /// Gender
+                          Text(
+                            'Gender',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.w400),
+                          ),
+                          SizedBox(height: getProportionateScreenHeight(9)),
+                          DropdownButtonFormField(
+                              value: _seletedGender,
+                              hint: Text(
+                                'Select your Gender',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: kLightPurple),
+                              ),
+                              items: genders.map((String items) {
+                                return DropdownMenuItem(
+                                  value: items,
+                                  child: Text(items),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _seletedGender = value;
+                                });
                               }),
                           SizedBox(height: getProportionateScreenHeight(10)),
 
@@ -307,6 +359,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           _isAgreed == false
                               ? const InActiveGeneralButton(text: 'Register')
                               : GeneralButton(
+                                  isLoading: _isLoading,
                                   text: 'Register',
                                   onPressed: () {
                                     Navigator.of(context).push(

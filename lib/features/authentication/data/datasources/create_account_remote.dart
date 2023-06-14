@@ -14,8 +14,9 @@ class CreateAccountRemoteDataSourceImpl
     implements CreateAccountRemoteDataSource {
   @override
   Future<ResponseModel> createAccountDt(Map<String, dynamic> map) async {
-    var res = await http.post(
+    dynamic res = await http.post(
       Uri.parse(signUpEndpoint),
+      body: json.encode(map),
       headers: {
         'Content-type': 'application/json',
         'Accept': 'text/plain',

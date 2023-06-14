@@ -1,12 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
-import 'package:hebron_pay/features/authentication/data/models/login_response_model.dart';
 import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
-import 'package:hebron_pay/features/home/data/models/balance_model.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';

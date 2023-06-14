@@ -6,22 +6,26 @@ import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
 import 'package:hebron_pay/size_config.dart';
 
-class GenerateTicket extends StatelessWidget {
+class GenerateTicket extends StatefulWidget {
   const GenerateTicket({super.key});
 
   static const id = "/generateTicket";
 
   @override
+  State<GenerateTicket> createState() => _GenerateTicketState();
+}
+
+class _GenerateTicketState extends State<GenerateTicket> {
+  /// [GlobalKey] to Validate the Sign In form
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  /// The [TextEditingController] for the Description TextField
+  final TextEditingController _descriptionController = TextEditingController();
+
+  /// The [TextEditingController] for the Amount TextField
+  final TextEditingController _amountController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
-    /// [GlobalKey] to Validate the Sign In form
-    final GlobalKey<FormState> _formKey = GlobalKey();
-
-    /// The [TextEditingController] for the Description TextField
-    final TextEditingController _descriptionController =
-        TextEditingController();
-
-    /// The [TextEditingController] for the Amount TextField
-    final TextEditingController _amountController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

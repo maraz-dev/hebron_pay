@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -34,7 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
   /// Boolean for Password suffix Icon
   final bool _showPassword = true;
 
-  /// Boolean for Password suffix Icon
+  /// Boolean for Loading Button
+  /// 783
   bool _isLoading = false;
 
   @override
@@ -67,11 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state is LoginFailure) {
             final exception = (state).errorMessage;
             print(exception);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              backgroundColor: kErrorColor,
-              content: Text(exception),
-              duration: const Duration(seconds: 3),
-            ));
+            showErrorSnackBar(context, exception);
           }
         },
         builder: (context, state) {

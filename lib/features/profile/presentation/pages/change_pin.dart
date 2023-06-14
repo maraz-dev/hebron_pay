@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
-import 'package:hebron_pay/features/profile/presentation/pages/profile.dart';
 import 'package:hebron_pay/size_config.dart';
 import 'package:pinput/pinput.dart';
 

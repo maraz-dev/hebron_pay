@@ -82,3 +82,46 @@ PinTheme kFocusedPin(BuildContext context) {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: kPrimaryColor, width: 3)));
 }
+
+/// Show Error SnackBar
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showErrorSnackBar(
+    BuildContext context, String exception) {
+  return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    backgroundColor: kErrorColor,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    content: Text(
+      exception,
+      style: Theme.of(context)
+          .textTheme
+          .bodyLarge!
+          .copyWith(fontWeight: FontWeight.bold, color: kWhiteColor),
+    ),
+    duration: const Duration(seconds: 3),
+    elevation: 2,
+    behavior: SnackBarBehavior.floating,
+    padding: EdgeInsets.all(getProportionateScreenWidth(20)),
+  ));
+}
+
+/// Show Error SnackBar
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSuccessSnackBar(
+    BuildContext context, String message) {
+  return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    backgroundColor: kGreenColor,
+    content: Text(
+      message,
+      style: Theme.of(context)
+          .textTheme
+          .bodyLarge!
+          .copyWith(fontWeight: FontWeight.bold, color: kWhiteColor),
+    ),
+    duration: const Duration(seconds: 3),
+    elevation: 2,
+    behavior: SnackBarBehavior.floating,
+    padding: EdgeInsets.all(getProportionateScreenWidth(20)),
+    margin: EdgeInsets.only(
+        bottom: SizeConfig.screenHeight! - 120,
+        left: getProportionateScreenWidth(10),
+        right: getProportionateScreenWidth(10)),
+  ));
+}

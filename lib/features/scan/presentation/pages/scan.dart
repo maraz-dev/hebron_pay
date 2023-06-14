@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hebron_pay/constants.dart';
-import 'package:hebron_pay/core/widgets/success_transaction.dart';
 import 'package:hebron_pay/size_config.dart';
 
-import '../../../../core/widgets/failed_transaction.dart';
 import '../../../../core/widgets/widgets.dart';
 
 class ScanScreen extends StatelessWidget {

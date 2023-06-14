@@ -1,4 +1,3 @@
-import 'package:hebron_pay/features/authentication/data/models/login_response_model.dart';
 import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/authentication/domain/repositories/login_repo.dart';
 

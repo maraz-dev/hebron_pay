@@ -1,4 +1,4 @@
-import 'package:hebron_pay/features/home/data/models/balance_model.dart';
+import 'package:hebron_pay/features/home/domain/entity/balance_entity.dart';
 import 'package:hebron_pay/features/home/domain/repository/balance_repo.dart';
 
 class BalanceUsecase {
@@ -6,7 +6,7 @@ class BalanceUsecase {
 
   BalanceUsecase({required this.balanceRepository});
 
-  Future<BalanceModel> call() async {
+  Future<BalanceEntity> call() async {
     return await balanceRepository.getBalance();
   }
 }
