@@ -31,7 +31,7 @@ const String changePasswordEndpoint =
 const String getSubAccountBalanceEndpoint =
     "$baseURL/api/Authentication/GetSubAccountBalance";
 
-/// DEPOSIT ENDPOINTS
+/// TRANSACTION ENDPOINTS
 /// Generate Ticket Endpoint
 const String generateTicketEndpoint = "$baseURL/api/Transaction/GenerateTicket";
 
@@ -51,3 +51,9 @@ const String getTransactionEndpoint = "$baseURL/api/Transaction/GetTransaction";
 
 /// Get Pending Transactions Endpoint
 const String getSubAccountEndpoint = "$baseURL/api/Transaction/GetSubAccount";
+
+/// Fund Wallet
+const String fundWalletEndpoint = "$baseURL/api/Transaction/FundWallet";
+
+/// Generate EOD
+const String generateEodEndpoint = "$baseURL/api/Transaction/GenerateEod";

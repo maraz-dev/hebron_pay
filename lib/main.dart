@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hebron_pay/features/authentication/presentation/bloc/email_verification_cubit/email_verification_cubit.dart';
 import 'package:hebron_pay/features/authentication/presentation/bloc/login_cubit/login_cubit.dart';
+import 'package:hebron_pay/features/authentication/presentation/bloc/sign_in_cubit/sign_up_cubit_cubit.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/forgot_password.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/fund_wallet_cubit/fund_wallet_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/generate_ticket_cubit/generate_ticket_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
@@ -41,10 +46,15 @@ class HebronPay extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<LoginCubit>(
-          create: (_) => di.sl<LoginCubit>(),
-        ),
-        BlocProvider<ProfileCubit>(create: (_) => di.sl<ProfileCubit>())
+        BlocProvider<LoginCubit>(create: (_) => di.sl<LoginCubit>()),
+        BlocProvider<ProfileCubit>(create: (_) => di.sl<ProfileCubit>()),
+        BlocProvider<SignUpCubit>(create: (_) => di.sl<SignUpCubit>()),
+        BlocProvider<EmailVerificationCubit>(
+            create: (_) => di.sl<EmailVerificationCubit>()),
+        BlocProvider<FundWalletCubit>(create: (_) => di.sl<FundWalletCubit>()),
+        BlocProvider<BalanceCubit>(create: (_) => di.sl<BalanceCubit>()),
+        BlocProvider<GenerateTicketCubit>(
+            create: (_) => di.sl<GenerateTicketCubit>())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

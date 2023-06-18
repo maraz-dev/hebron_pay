@@ -11,8 +11,10 @@ class HpTextFormField extends StatelessWidget {
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
   final int? maxLines;
+  bool readOnly;
+  final Function()? onTapped;
 
-  const HpTextFormField({
+  HpTextFormField({
     super.key,
     required this.controller,
     required this.hintText,
@@ -22,6 +24,8 @@ class HpTextFormField extends StatelessWidget {
     required this.textInputType,
     required this.validator,
     this.maxLines,
+    this.readOnly = false,
+    this.onTapped,
   });
 
   @override
@@ -38,6 +42,8 @@ class HpTextFormField extends StatelessWidget {
         ),
         SizedBox(height: getProportionateScreenHeight(9)),
         TextFormField(
+          onTap: onTapped,
+          readOnly: readOnly,
           cursorColor: kLightPurple,
           maxLength: maxLines,
           decoration: InputDecoration(hintText: hintText!),

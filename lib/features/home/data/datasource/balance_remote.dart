@@ -1,28 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hebron_pay/core/data/model.dart';
-import 'package:hebron_pay/endpoints.dart';
-import 'package:http/http.dart' as http;
+import 'package:hebron_pay/features/home/data/models/balance_model.dart';
 
 abstract class BalanceRemoteDatasource {
-  Future<ResponseModel> showBalance();
+  Future<HebronPayWallet> showBalance();
 }
 
 class BalanceRemoteDataImpl implements BalanceRemoteDatasource {
   @override
-  Future<ResponseModel> showBalance() async {
+  Future<HebronPayWallet> showBalance() async {
     FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-    String? token = await secureStorage.read(key: 'userToken');
-    dynamic res = await http.get(
-      Uri.parse(getSubAccountBalanceEndpoint),
-      headers: {
-        'Content-type': 'application/json',
-        'Accept': 'text/plain',
-        'Bearer Token': token!
-      },
-    );
-    print(res.statusCode);
-    return ResponseModel.fromJson(json.decode(res.body));
+    String? res = await secureStorage.read(key: 'walletDetails');
+    var responseBody = json.decode(res!);
+    return HebronPayWallet.fromJson(responseBody);
   }
 }

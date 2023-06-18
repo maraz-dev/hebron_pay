@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
+import 'package:hebron_pay/features/authentication/presentation/bloc/email_verification_cubit/email_verification_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/transaction_receipt.dart';
 import 'package:hebron_pay/size_config.dart';
 import 'package:pinput/pinput.dart';
@@ -22,10 +24,13 @@ class _OTPVerificationState extends State<OTPVerification> {
 
   final GlobalKey<FormState> _formKey = GlobalKey();
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
-    debugPrint(widget.emailAddress);
+    BlocProvider.of<EmailVerificationCubit>(context)
+        .sendOTP(widget.emailAddress);
   }
 
   @override
@@ -45,97 +50,123 @@ class _OTPVerificationState extends State<OTPVerification> {
         ),
       ),
       body: const AuthenticationBackground(),
-      bottomSheet: AuthenticationBody(
-        body: SingleChildScrollView(
-            child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                  child: Text(
-                'OTP Verification',
-                style: Theme.of(context).textTheme.displayMedium,
-              )),
-              Center(
-                child: Text(
-                  "An OTP code has been sent to your email",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(height: getProportionateScreenHeight(30)),
-
-              /// OTP Textfields
-              Center(
-                child: Pinput(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "PIN cannot be empty";
-                    }
-                    return null;
-                  },
-                  onCompleted: (value) {
-                    setState(() {
-                      _otpController.text = value;
-                      //print(_otpController.text);
-                    });
-                  },
-                  length: 5,
-                  textInputAction: TextInputAction.done,
-                  defaultPinTheme: kDefaultPin(context),
-                  focusedPinTheme: kFocusedPin(context),
-                ),
-              ),
-              SizedBox(height: getProportionateScreenHeight(25)),
-
-              /// Timer
-              Text(
-                '00:00',
-                style: Theme.of(context)
-                    .textTheme
-                    .displaySmall!
-                    .copyWith(color: kErrorColor),
-              ),
-
-              /// Resend OTP Button
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "I didn’t receive any code. ",
+      bottomSheet: BlocConsumer<EmailVerificationCubit, EmailVerificationState>(
+        listener: (context, state) {
+          if (state is EmailVerificationSuccess) {
+            showSuccessSnackBar(context, "Email Successfully Sent");
+          }
+          if (state is EmailVerificationFailed) {
+            showErrorSnackBar(context, (state).errorMessage);
+          }
+        },
+        builder: (context, state) {
+          if (state is EmailVerificationLoading) {
+            _isLoading = true;
+          } else {
+            _isLoading = false;
+          }
+          return AuthenticationBody(
+            body: SingleChildScrollView(
+                child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                      child: Text(
+                    'OTP Verification',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  )),
+                  Center(
+                    child: Text(
+                      "An OTP code has been sent to your email",
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall!
                           .copyWith(fontWeight: FontWeight.bold),
                     ),
-                    GestureDetector(
-                      onTap: null,
-                      child: Text(
-                        'Resend Code',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: kPrimaryColor, fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: getProportionateScreenHeight(50)),
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(30)),
 
-              /// General Button
-              GeneralButton(
-                  text: 'Continue',
-                  onPressed: () {
-                    if (!_formKey.currentState!.validate()) return;
-                    Navigator.pushNamed(context, TransactionReceipt.id);
-                  })
-            ],
-          ),
-        )),
+                  /// OTP Textfields
+                  Center(
+                    child: Pinput(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "PIN cannot be empty";
+                        }
+                        return null;
+                      },
+                      onCompleted: (value) {
+                        setState(() {
+                          _otpController.text = value;
+                          //print(_otpController.text);
+                        });
+                      },
+                      length: 5,
+                      textInputAction: TextInputAction.done,
+                      defaultPinTheme: kDefaultPin(context),
+                      focusedPinTheme: kFocusedPin(context),
+                    ),
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(25)),
+
+                  /// Timer
+                  Text(
+                    '00:00',
+                    style: Theme.of(context)
+                        .textTheme
+                        .displaySmall!
+                        .copyWith(color: kErrorColor),
+                  ),
+
+                  /// Resend OTP Button
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "I didn’t receive any code. ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        GestureDetector(
+                          onTap: null,
+                          child: Text(
+                            'Resend Code',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(50)),
+
+                  /// General Button
+                  GeneralButton(
+                    isLoading: _isLoading,
+                    text: 'Continue',
+                    onPressed: _validateOtp,
+                  )
+                ],
+              ),
+            )),
+          );
+        },
       ),
     );
+  }
+
+  void _validateOtp() {
+    if (!_formKey.currentState!.validate()) return;
+    BlocProvider.of<EmailVerificationCubit>(context)
+        .validateOtp(widget.emailAddress, _otpController.text);
   }
 }

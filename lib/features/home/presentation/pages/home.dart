@@ -1,9 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
+import 'package:hebron_pay/features/home/domain/entity/balance_entity.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
@@ -24,6 +28,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  BalanceEntity? balanceDetails;
+
+  // /// Show Balance
+  // void showBalance() async {
+  //   balanceDetails = await BlocProvider.of<BalanceCubit>(context).showBalance();
+  // }
+
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    print('Home');
+    // showBalance();
+    // print(balanceDetails!.walletBalance);
+    BlocProvider.of<BalanceCubit>(context).showBalance();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,24 +192,29 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 2,
                           ),
                           borderRadius: BorderRadius.circular(10)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SvgPicture.asset(eodIcon),
-                          Text(
-                            'Generate \nE O D',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                    color: kPrimaryColor,
-                                    fontWeight: FontWeight.bold),
-                          ),
-                          SvgPicture.asset(
-                            arrowRightIcon,
-                          )
-                        ],
-                      ),
+                      child: _isLoading
+                          ? SpinKitDancingSquare(
+                              color: kPrimaryColor,
+                              size: getProportionateScreenWidth(25),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SvgPicture.asset(eodIcon),
+                                Text(
+                                  'Generate \nE O D',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: kPrimaryColor,
+                                          fontWeight: FontWeight.bold),
+                                ),
+                                SvgPicture.asset(
+                                  arrowRightIcon,
+                                )
+                              ],
+                            ),
                     ),
                   ),
                 ),

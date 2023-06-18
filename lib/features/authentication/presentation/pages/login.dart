@@ -7,6 +7,7 @@ import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/authentication/presentation/bloc/login_cubit/login_cubit.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/forgot_password.dart';
+import 'package:hebron_pay/features/authentication/presentation/pages/otp_verification.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
 import 'package:hebron_pay/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:hebron_pay/size_config.dart';
@@ -37,7 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final bool _showPassword = true;
 
   /// Boolean for Loading Button
-  /// 783
   bool _isLoading = false;
 
   @override
@@ -63,9 +63,16 @@ class _LoginScreenState extends State<LoginScreen> {
       bottomSheet: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return DashBoard(loggedInUser: userDetails!);
-            }));
+            if (userDetails!.isOtpVerified == false) {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return OTPVerification(
+                    emailAddress: _emailAddressController.text);
+              }));
+            } else {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return DashBoard(loggedInUser: userDetails!);
+              }));
+            }
           }
           if (state is LoginFailure) {
             final exception = (state).errorMessage;

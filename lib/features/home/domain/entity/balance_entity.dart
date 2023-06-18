@@ -1,17 +1,16 @@
 import 'package:equatable/equatable.dart';
 
 class BalanceEntity extends Equatable {
-  final String currency;
-  final String availableBalance;
-  final String ledgerBalance;
+  final int id;
+  final double walletBalance;
+  final int walletPin;
 
   const BalanceEntity({
-    required this.currency,
-    required this.availableBalance,
-    required this.ledgerBalance,
+    required this.id,
+    required this.walletBalance,
+    required this.walletPin,
   });
 
   @override
-  // TODO: implement props
-  List<Object?> get props => [currency, availableBalance, ledgerBalance];
+  List<Object?> get props => [id, walletBalance, walletPin];
 }

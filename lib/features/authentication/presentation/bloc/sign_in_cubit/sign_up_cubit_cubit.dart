@@ -11,15 +11,17 @@ class SignUpCubit extends Cubit<SignUpCubitState> {
   SignUpCubit({required this.createAccountUsecase})
       : super(SignUpCubitInitial());
 
-  Future<void> submitSignUp(Map<String, dynamic> map) async {
+  Future<String?> submitSignUp(Map<String, dynamic> map) async {
     emit(SignUpLoading());
     try {
-      await createAccountUsecase.call(map);
+      String response = await createAccountUsecase.call(map);
       emit(SignUpSuccess());
+      return response;
     } on SocketException catch (e) {
       emit(SignUpFailure(e.message));
     } catch (e) {
       emit(SignUpFailure(e.toString()));
     }
+    return null;
   }
 }

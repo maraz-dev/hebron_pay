@@ -7,6 +7,7 @@ import 'package:hebron_pay/features/authentication/data/datasources/login_remote
 import 'package:hebron_pay/features/authentication/data/models/login_response_model.dart';
 import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/authentication/domain/repositories/login_repo.dart';
+import 'package:hebron_pay/features/home/data/models/balance_model.dart';
 
 class LoginRepoImpl implements LoginRepository {
   final LoginRemoteDataSource dataSource;
@@ -40,6 +41,11 @@ class LoginRepoImpl implements LoginRepository {
           print(res.message);
           await secureStorage.write(key: 'userToken', value: res.data['token']);
           var userData = LoginResponseModel.fromJson(res.data);
+          var userWalletDetails = res.data['hebronPayWallet'];
+
+          /// Store the User Wallet Details
+          await secureStorage.write(
+              key: 'walletDetails', value: json.encode(userWalletDetails));
           // Store the User Data
           await secureStorage.write(
               key: 'userData', value: json.encode(userData.toJson()));
