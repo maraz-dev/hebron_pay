@@ -9,6 +9,7 @@ import 'package:hebron_pay/features/authentication/presentation/pages/login.dart
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/fund_wallet_cubit/fund_wallet_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_ticket_cubit/generate_ticket_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
@@ -54,7 +55,8 @@ class HebronPay extends StatelessWidget {
         BlocProvider<FundWalletCubit>(create: (_) => di.sl<FundWalletCubit>()),
         BlocProvider<BalanceCubit>(create: (_) => di.sl<BalanceCubit>()),
         BlocProvider<GenerateTicketCubit>(
-            create: (_) => di.sl<GenerateTicketCubit>())
+            create: (_) => di.sl<GenerateTicketCubit>()),
+        BlocProvider<GenerateEodCubit>(create: (_) => di.sl<GenerateEodCubit>())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

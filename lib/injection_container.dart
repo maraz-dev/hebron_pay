@@ -17,18 +17,23 @@ import 'package:hebron_pay/features/authentication/presentation/bloc/email_verif
 import 'package:hebron_pay/features/authentication/presentation/bloc/sign_in_cubit/sign_up_cubit_cubit.dart';
 import 'package:hebron_pay/features/home/data/datasource/balance_remote.dart';
 import 'package:hebron_pay/features/home/data/datasource/fund_wallet_remote.dart';
+import 'package:hebron_pay/features/home/data/datasource/generate_eod_remote.dart';
 import 'package:hebron_pay/features/home/data/datasource/generate_ticket_remote.dart';
 import 'package:hebron_pay/features/home/data/repository/balance_repo_impl.dart';
 import 'package:hebron_pay/features/home/data/repository/fund_wallet_repo_impl.dart';
+import 'package:hebron_pay/features/home/data/repository/generate_eod_repo_impl.dart';
 import 'package:hebron_pay/features/home/data/repository/generate_ticket_repo_impl.dart';
 import 'package:hebron_pay/features/home/domain/repository/balance_repo.dart';
 import 'package:hebron_pay/features/home/domain/repository/fund_wallet_repo.dart';
+import 'package:hebron_pay/features/home/domain/repository/generate_eod_repo.dart';
 import 'package:hebron_pay/features/home/domain/repository/generate_ticket_repo.dart';
 import 'package:hebron_pay/features/home/domain/usecase/balance_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/fund_wallet_usecase.dart';
+import 'package:hebron_pay/features/home/domain/usecase/generate_eod_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/generate_ticket_usecase.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/fund_wallet_cubit/fund_wallet_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_ticket_cubit/generate_ticket_cubit.dart';
 import 'package:hebron_pay/features/profile/data/datasources/change_password_remote.dart';
 import 'package:hebron_pay/features/profile/data/repositories/change_password_repo_impl.dart';
@@ -56,6 +61,8 @@ Future<void> init() async {
       () => BalanceCubit(balanceUsecase: sl.call()));
   sl.registerFactory<GenerateTicketCubit>(
       () => GenerateTicketCubit(usecase: sl.call()));
+  sl.registerFactory<GenerateEodCubit>(
+      () => GenerateEodCubit(usecase: sl.call()));
 
   ///Usecases
   sl.registerLazySingleton<LoginUsecase>(
@@ -74,6 +81,8 @@ Future<void> init() async {
       () => FundWalletUsecase(fundWalletRepo: sl.call()));
   sl.registerLazySingleton<GenerateTicketUsecase>(
       () => GenerateTicketUsecase(generateTicketRepo: sl.call()));
+  sl.registerLazySingleton<GenerateEodUsecase>(
+      () => GenerateEodUsecase(repository: sl.call()));
 
   ///Repositories
   sl.registerLazySingleton<LoginRepository>(() => LoginRepoImpl(
@@ -90,6 +99,8 @@ Future<void> init() async {
       () => FundWalletRepoImpl(networkInfo: sl.call(), remoteData: sl.call()));
   sl.registerLazySingleton<GenerateTicketRepo>(
       () => GenerateTicketRepoImpl(remote: sl.call(), networkInfo: sl.call()));
+  sl.registerLazySingleton<GenerateEodRepository>(
+      () => GenerateEodRepoImpl(remote: sl.call(), networkInfo: sl.call()));
 
   ///Datasources
   sl.registerLazySingleton<LoginRemoteDataSource>(
@@ -106,6 +117,7 @@ Future<void> init() async {
       () => FundWalletRemoteDataImpl());
   sl.registerLazySingleton<GenerateTicketRemote>(
       () => GenerateTicketRemoteImpl());
+  sl.registerLazySingleton<GenerateEodRemote>(() => GenerateEodRemoteImpl());
 
   ///Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());

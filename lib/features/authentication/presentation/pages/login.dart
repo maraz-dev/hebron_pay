@@ -203,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
     userDetails = await BlocProvider.of<LoginCubit>(context).submitLogin(
-        email: _emailAddressController.text.trim(),
+        email: _emailAddressController.text.trim().toLowerCase(),
         password: _passwordController.text);
   }
 }

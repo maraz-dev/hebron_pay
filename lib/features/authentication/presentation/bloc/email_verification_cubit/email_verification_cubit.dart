@@ -15,10 +15,10 @@ class EmailVerificationCubit extends Cubit<EmailVerificationState> {
       : super(EmailVerificationInitial());
 
   Future<String?> sendOTP(String email) async {
-    emit(EmailVerificationLoading());
+    ///emit(EmailVerificationLoading());
     try {
       var successMessage = await sendOTPUsecase.call(email);
-      emit(const EmailVerificationSuccess(usecase: 'SEND_OTP'));
+      emit(EmailVerificationSent());
       return successMessage.toString();
     } on SocketException catch (e) {
       emit(EmailVerificationFailed(errorMessage: e.message));
@@ -33,7 +33,7 @@ class EmailVerificationCubit extends Cubit<EmailVerificationState> {
     try {
       var successMessage =
           await validateOTPUsecase.call(email, inputPin) as String;
-      emit(const EmailVerificationSuccess(usecase: 'VALIDATE_OTP'));
+      emit(EmailVerificationSuccess());
       return successMessage;
     } on SocketException catch (e) {
       emit(EmailVerificationFailed(errorMessage: e.message));

@@ -18,9 +18,11 @@ class EmailVerificationLoading extends EmailVerificationState {
 }
 
 class EmailVerificationSuccess extends EmailVerificationState {
-  final String usecase;
+  @override
+  List<Object> get props => [];
+}
 
-  const EmailVerificationSuccess({required this.usecase});
+class EmailVerificationSent extends EmailVerificationState {
   @override
   List<Object> get props => [];
 }

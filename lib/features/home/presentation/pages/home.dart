@@ -17,6 +17,7 @@ import 'package:hebron_pay/features/home/presentation/widgets/transaction_card.d
 import 'package:hebron_pay/size_config.dart';
 
 import '../../../../core/widgets/widgets.dart';
+import '../bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import '../widgets/pending_transaction_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -179,44 +180,66 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(width: getProportionateScreenWidth(15)),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: getProportionateScreenWidth(10),
-                          vertical: getProportionateScreenHeight(5)),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: kPrimaryColor,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: _isLoading
-                          ? SpinKitDancingSquare(
-                              color: kPrimaryColor,
-                              size: getProportionateScreenWidth(25),
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SvgPicture.asset(eodIcon),
-                                Text(
-                                  'Generate \nE O D',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: kPrimaryColor,
-                                          fontWeight: FontWeight.bold),
-                                ),
-                                SvgPicture.asset(
-                                  arrowRightIcon,
+                BlocConsumer<GenerateEodCubit, GenerateEodState>(
+                  listener: (context, state) {
+                    if (state is GenerateEodSuccess) {
+                      showSuccessSnackBar(context,
+                          'Your End-of-Day has been Successfully sent to your Mail');
+                    }
+                    if (state is GenerateEodFailure) {
+                      showErrorSnackBar(context, (state).errorMessage);
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is GenerateEodLoading) {
+                      _isLoading = true;
+                    } else {
+                      _isLoading = false;
+                    }
+                    return Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          await BlocProvider.of<GenerateEodCubit>(context)
+                              .generateEod();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: getProportionateScreenWidth(10),
+                              vertical: getProportionateScreenHeight(5)),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: kPrimaryColor,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: _isLoading
+                              ? SpinKitDancingSquare(
+                                  color: kPrimaryColor,
+                                  size: getProportionateScreenWidth(50),
                                 )
-                              ],
-                            ),
-                    ),
-                  ),
+                              : Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SvgPicture.asset(eodIcon),
+                                    Text(
+                                      'Generate \nE O D',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              color: kPrimaryColor,
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    SvgPicture.asset(
+                                      arrowRightIcon,
+                                    )
+                                  ],
+                                ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

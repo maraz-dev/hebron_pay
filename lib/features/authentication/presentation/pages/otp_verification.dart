@@ -52,8 +52,11 @@ class _OTPVerificationState extends State<OTPVerification> {
       body: const AuthenticationBackground(),
       bottomSheet: BlocConsumer<EmailVerificationCubit, EmailVerificationState>(
         listener: (context, state) {
+          if (state is EmailVerificationSent) {
+            showSuccessSnackBar(context, "OTP has been Sent");
+          }
           if (state is EmailVerificationSuccess) {
-            showSuccessSnackBar(context, "Email Successfully Sent");
+            showSuccessSnackBar(context, "Your Email has been Verified");
           }
           if (state is EmailVerificationFailed) {
             showErrorSnackBar(context, (state).errorMessage);
