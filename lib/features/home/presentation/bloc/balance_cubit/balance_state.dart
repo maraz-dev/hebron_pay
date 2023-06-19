@@ -9,7 +9,11 @@ abstract class BalanceState extends Equatable {
 
 class BalanceInitial extends BalanceState {}
 
-class BalanceSuccess extends BalanceState {}
+class BalanceSuccess extends BalanceState {
+  final BalanceEntity walletDetails;
+
+  const BalanceSuccess({required this.walletDetails});
+}
 
 class BalanceFailure extends BalanceState {
   final String errorMessage;

@@ -7,7 +7,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/balance_entity.dart';
+import 'package:hebron_pay/features/home/domain/entity/pending_transaction_entity.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/get_pending_transactions_cubit/pending_transactions_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
@@ -30,11 +32,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   BalanceEntity? balanceDetails;
+  List<PendingTransactionEntity>? pendingTransaction;
 
-  // /// Show Balance
-  // void showBalance() async {
-  //   balanceDetails = await BlocProvider.of<BalanceCubit>(context).showBalance();
-  // }
+  /// Show Balance
+  void showBalance() async {
+    await BlocProvider.of<BalanceCubit>(context).showBalance();
+  }
+
+  /// Get Transactions
+  void _getTransaction() async {
+    var res = await BlocProvider.of<PendingTransactionsCubit>(context)
+        .getPendingTransactions();
+    pendingTransaction = res;
+  }
 
   bool _isLoading = false;
 
@@ -42,9 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     print('Home');
-    // showBalance();
-    // print(balanceDetails!.walletBalance);
-    BlocProvider.of<BalanceCubit>(context).showBalance();
+    showBalance();
+    _getTransaction();
   }
 
   @override
@@ -71,136 +80,106 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.symmetric(
             horizontal: getProportionateScreenWidth(20),
             vertical: getProportionateScreenHeight(10)),
-        child: Column(
-          children: [
-            /// Balance, Withdraw and Deposit Box
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                  horizontal: getProportionateScreenWidth(20),
-                  vertical: getProportionateScreenHeight(20)),
-              decoration: BoxDecoration(
-                  color: kPrimaryColor,
-                  borderRadius: BorderRadius.circular(20)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Total Balance',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: kWhiteColor),
-                  ),
-                  SizedBox(height: getProportionateScreenHeight(10)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        nairaAmount(10000),
-                        style: Theme.of(context)
-                            .textTheme
-                            .displayLarge!
-                            .copyWith(color: kWhiteColor),
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: SvgPicture.asset(
-                          eyeSlashIcon,
-                          color: kWhiteColor,
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: getProportionateScreenHeight(16)),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TransactionButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, DepositScreen.id);
-                          },
-                          text: 'Deposit',
-                        ),
-                      ),
-                      SizedBox(width: getProportionateScreenWidth(20)),
-                      Expanded(
-                        child: TransactionButton(
-                          text: 'Withdraw',
-                          onPressed: () {
-                            Navigator.pushNamed(context, WithdrawScreen.id);
-                          },
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-            SizedBox(height: getProportionateScreenHeight(16)),
-
-            /// Ticket and EOD Button
-            SizedBox(height: getProportionateScreenHeight(10)),
-            Row(
+        child: BlocConsumer<BalanceCubit, BalanceState>(
+          listener: (context, state) {
+            if (state is BalanceFailure) {
+              showErrorSnackBar(context, (state).errorMessage);
+            }
+          },
+          builder: (context, state) {
+            if (state is BalanceLoading) {
+              _isLoading = true;
+            } else {
+              _isLoading = false;
+            }
+            if (state is BalanceSuccess) {
+              balanceDetails = (state).walletDetails;
+            }
+            return Column(
               children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, GenerateTicket.id);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: getProportionateScreenWidth(10),
-                          vertical: getProportionateScreenHeight(5)),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: kPrimaryColor,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SvgPicture.asset(ticketIcon),
-                          Text(
-                            'Generate \nTicket',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                    color: kPrimaryColor,
-                                    fontWeight: FontWeight.bold),
-                          ),
-                          SvgPicture.asset(
-                            arrowRightIcon,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                /// Balance, Withdraw and Deposit Box
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: getProportionateScreenWidth(20),
+                      vertical: getProportionateScreenHeight(20)),
+                  decoration: BoxDecoration(
+                      color: kPrimaryColor,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: _isLoading || balanceDetails == null
+                      ? SpinKitWave(
+                          color: kWhiteColor,
+                          size: getProportionateScreenWidth(60),
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Total Balance',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: kWhiteColor),
+                            ),
+                            SizedBox(height: getProportionateScreenHeight(10)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  nairaAmount(
+                                      balanceDetails!.walletBalance.toDouble()),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayLarge!
+                                      .copyWith(color: kWhiteColor),
+                                ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: SvgPicture.asset(
+                                    eyeSlashIcon,
+                                    color: kWhiteColor,
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: getProportionateScreenHeight(16)),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TransactionButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, DepositScreen.id);
+                                    },
+                                    text: 'Deposit',
+                                  ),
+                                ),
+                                SizedBox(
+                                    width: getProportionateScreenWidth(20)),
+                                Expanded(
+                                  child: TransactionButton(
+                                    text: 'Withdraw',
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, WithdrawScreen.id);
+                                    },
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                 ),
-                SizedBox(width: getProportionateScreenWidth(15)),
-                BlocConsumer<GenerateEodCubit, GenerateEodState>(
-                  listener: (context, state) {
-                    if (state is GenerateEodSuccess) {
-                      showSuccessSnackBar(context,
-                          'Your End-of-Day has been Successfully sent to your Mail');
-                    }
-                    if (state is GenerateEodFailure) {
-                      showErrorSnackBar(context, (state).errorMessage);
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is GenerateEodLoading) {
-                      _isLoading = true;
-                    } else {
-                      _isLoading = false;
-                    }
-                    return Expanded(
+                SizedBox(height: getProportionateScreenHeight(16)),
+
+                /// Ticket and EOD Button
+                SizedBox(height: getProportionateScreenHeight(10)),
+                Row(
+                  children: [
+                    Expanded(
                       child: GestureDetector(
-                        onTap: () async {
-                          await BlocProvider.of<GenerateEodCubit>(context)
-                              .generateEod();
+                        onTap: () {
+                          Navigator.pushNamed(context, GenerateTicket.id);
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(
@@ -212,173 +191,273 @@ class _HomeScreenState extends State<HomeScreen> {
                                 width: 2,
                               ),
                               borderRadius: BorderRadius.circular(10)),
-                          child: _isLoading
-                              ? SpinKitDancingSquare(
-                                  color: kPrimaryColor,
-                                  size: getProportionateScreenWidth(50),
-                                )
-                              : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SvgPicture.asset(eodIcon),
-                                    Text(
-                                      'Generate \nE O D',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                              color: kPrimaryColor,
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    SvgPicture.asset(
-                                      arrowRightIcon,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SvgPicture.asset(ticketIcon),
+                              Text(
+                                'Generate \nTicket',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold),
+                              ),
+                              SvgPicture.asset(
+                                arrowRightIcon,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: getProportionateScreenWidth(15)),
+                    BlocConsumer<GenerateEodCubit, GenerateEodState>(
+                      listener: (context, state) {
+                        if (state is GenerateEodSuccess) {
+                          showSuccessSnackBar(context,
+                              'Your End-of-Day has been Successfully sent to your Mail');
+                        }
+                        if (state is GenerateEodFailure) {
+                          showErrorSnackBar(context, (state).errorMessage);
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is GenerateEodLoading) {
+                          _isLoading = true;
+                        } else {
+                          _isLoading = false;
+                        }
+                        return Expanded(
+                          child: GestureDetector(
+                            onTap: () async {
+                              await BlocProvider.of<GenerateEodCubit>(context)
+                                  .generateEod();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: getProportionateScreenWidth(10),
+                                  vertical: getProportionateScreenHeight(5)),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: kPrimaryColor,
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: _isLoading
+                                  ? SpinKitDancingSquare(
+                                      color: kPrimaryColor,
+                                      size: getProportionateScreenWidth(50),
                                     )
-                                  ],
-                                ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: getProportionateScreenHeight(15)),
-
-                    /// Pending Payments
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Pending Transactions',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(
-                                  fontSize: 16, fontWeight: FontWeight.w400),
-                        ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Text(
-                            'See all',
-                            style: Theme.of(context)
-                                .textTheme
-                                .displaySmall!
-                                .copyWith(
-                                    fontSize: 16,
-                                    decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.w400,
-                                    color: kDarkGrey),
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SvgPicture.asset(eodIcon),
+                                        Text(
+                                          'Generate \nE O D',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                  color: kPrimaryColor,
+                                                  fontWeight: FontWeight.bold),
+                                        ),
+                                        SvgPicture.asset(
+                                          arrowRightIcon,
+                                        )
+                                      ],
+                                    ),
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(10)),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
-                            context, PendingTransactionReceipt.id);
+                        );
                       },
-                      child: PendingTransactionCard(
-                        ticketDescription: 'Chicken and Chips',
-                        ticketAmount: nairaAmount(1000),
-                        timeCreated: '8:55PM',
-                        dateCreated: '25-10-2022',
-                      ),
                     ),
-                    SizedBox(height: getProportionateScreenHeight(10)),
-                    PendingTransactionCard(
-                      ticketDescription: 'Drinks',
-                      ticketAmount: nairaAmount(1000),
-                      timeCreated: '8:55PM',
-                      dateCreated: '25-10-2022',
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(16)),
-
-                    /// Recent Transactions
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Recent Transactions',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(
-                                  fontSize: 16, fontWeight: FontWeight.w400),
-                        ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Text(
-                            'See all',
-                            style: Theme.of(context)
-                                .textTheme
-                                .displaySmall!
-                                .copyWith(
-                                    fontSize: 16,
-                                    decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.w400,
-                                    color: kDarkGrey),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(10)),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, TransactionReceipt.id);
-                      },
-                      child: TransactionCard(
-                        ticketDescription: 'Chicken and Chips',
-                        ticketAmount: nairaAmount(2000),
-                        isDebit: true,
-                        timeCreated: '5:45PM',
-                        dateCreated: '25-10-2022',
-                      ),
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(10)),
-                    TransactionCard(
-                      ticketDescription: 'Chicken and Chips',
-                      ticketAmount: nairaAmount(20000),
-                      isDebit: false,
-                      timeCreated: '5:45PM',
-                      dateCreated: '25-10-2022',
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(10)),
-                    TransactionCard(
-                      ticketDescription: 'Drinks',
-                      ticketAmount: nairaAmount(2000),
-                      isDebit: true,
-                      timeCreated: '5:45PM',
-                      dateCreated: '25-10-2022',
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(10)),
-                    TransactionCard(
-                      ticketDescription: 'Chicken and Chips',
-                      ticketAmount: nairaAmount(20000),
-                      isDebit: false,
-                      timeCreated: '5:45PM',
-                      dateCreated: '25-10-2022',
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(10)),
-                    TransactionCard(
-                      ticketDescription: 'Drinks',
-                      ticketAmount: nairaAmount(2000),
-                      isDebit: true,
-                      timeCreated: '5:45PM',
-                      dateCreated: '25-10-2022',
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(100))
                   ],
                 ),
-              ),
-            )
-          ],
+
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(height: getProportionateScreenHeight(15)),
+
+                        /// Pending Payments
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Pending Transactions',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400),
+                            ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Text(
+                                'See all',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                        fontSize: 16,
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.w400,
+                                        color: kDarkGrey),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(10)),
+                        BlocConsumer<PendingTransactionsCubit,
+                            PendingTransactionsState>(
+                          listener: (context, state) {
+                            if (state is PendingTransactionsFailure) {
+                              showErrorSnackBar(context, (state).errorMessage);
+                            }
+                          },
+                          builder: (context, state) {
+                            if (state is PendingTransactionsLoading) {
+                              _isLoading = true;
+                            } else {
+                              _isLoading = false;
+                            }
+                            if (state is PendingTransactionsSuccess) {
+                              pendingTransaction = (state).pendingTrx;
+                            }
+                            return _isLoading
+                                ? SpinKitWave(
+                                    color: kPrimaryColor,
+                                    size: getProportionateScreenWidth(25),
+                                  )
+                                : SizedBox(
+                                    height: getProportionateScreenHeight(170),
+                                    child: ListView.builder(
+                                      physics: const ScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: 2,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(context,
+                                                PendingTransactionReceipt.id);
+                                          },
+                                          child: Column(
+                                            children: [
+                                              PendingTransactionCard(
+                                                ticketDescription:
+                                                    pendingTransaction![index]
+                                                        .description,
+                                                ticketAmount: nairaAmount(
+                                                    pendingTransaction![index]
+                                                        .amount
+                                                        .toDouble()),
+                                                timeCreated:
+                                                    pendingTransaction![index]
+                                                        .time,
+                                                dateCreated:
+                                                    pendingTransaction![index]
+                                                        .date,
+                                              ),
+                                              SizedBox(
+                                                  height:
+                                                      getProportionateScreenHeight(
+                                                          10)),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                          },
+                        ),
+
+                        /// Recent Transactions
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Recent Transactions',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400),
+                            ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Text(
+                                'See all',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                        fontSize: 16,
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.w400,
+                                        color: kDarkGrey),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(10)),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, TransactionReceipt.id);
+                          },
+                          child: TransactionCard(
+                            ticketDescription: 'Chicken and Chips',
+                            ticketAmount: nairaAmount(2000),
+                            isDebit: true,
+                            timeCreated: '5:45PM',
+                            dateCreated: '25-10-2022',
+                          ),
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(10)),
+                        TransactionCard(
+                          ticketDescription: 'Chicken and Chips',
+                          ticketAmount: nairaAmount(20000),
+                          isDebit: false,
+                          timeCreated: '5:45PM',
+                          dateCreated: '25-10-2022',
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(10)),
+                        TransactionCard(
+                          ticketDescription: 'Drinks',
+                          ticketAmount: nairaAmount(2000),
+                          isDebit: true,
+                          timeCreated: '5:45PM',
+                          dateCreated: '25-10-2022',
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(10)),
+                        TransactionCard(
+                          ticketDescription: 'Chicken and Chips',
+                          ticketAmount: nairaAmount(20000),
+                          isDebit: false,
+                          timeCreated: '5:45PM',
+                          dateCreated: '25-10-2022',
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(10)),
+                        TransactionCard(
+                          ticketDescription: 'Drinks',
+                          ticketAmount: nairaAmount(2000),
+                          isDebit: true,
+                          timeCreated: '5:45PM',
+                          dateCreated: '25-10-2022',
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(100))
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            );
+          },
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class BalanceEntity extends Equatable {
   final int id;
-  final double walletBalance;
+  final int walletBalance;
   final int walletPin;
 
   const BalanceEntity({

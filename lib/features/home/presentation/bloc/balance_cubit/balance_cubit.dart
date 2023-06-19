@@ -14,8 +14,9 @@ class BalanceCubit extends Cubit<BalanceState> {
   Future<BalanceEntity?> showBalance() async {
     emit(BalanceLoading());
     try {
-      emit(BalanceSuccess());
-      return await balanceUsecase.call();
+      var details = await balanceUsecase.call();
+      emit(BalanceSuccess(walletDetails: details));
+      return details;
     } on SocketException catch (e) {
       emit(BalanceFailure(errorMessage: e.message));
     } catch (e) {
