@@ -12,8 +12,10 @@ import 'package:hebron_pay/features/home/presentation/bloc/fund_wallet_cubit/fun
 import 'package:hebron_pay/features/home/presentation/bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_ticket_cubit/generate_ticket_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/get_pending_transactions_cubit/pending_transactions_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/transaction_cubit/transaction_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
+import 'package:hebron_pay/features/home/presentation/pages/home.dart';
 import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
 import 'package:hebron_pay/features/home/presentation/pages/transaction_receipt.dart';
 import 'package:hebron_pay/features/home/presentation/pages/withdraw.dart';
@@ -60,7 +62,8 @@ class HebronPay extends StatelessWidget {
         BlocProvider<GenerateEodCubit>(
             create: (_) => di.sl<GenerateEodCubit>()),
         BlocProvider<PendingTransactionsCubit>(
-            create: (_) => di.sl<PendingTransactionsCubit>())
+            create: (_) => di.sl<PendingTransactionsCubit>()),
+        BlocProvider<TransactionCubit>(create: (_) => di.sl<TransactionCubit>())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -78,9 +81,6 @@ class HebronPay extends StatelessWidget {
                 const TermsAndConditionScreen(),
             PrivacyPolicyScreen.id: (context) => const PrivacyPolicyScreen(),
             HelpAndSupportScreen.id: (context) => const HelpAndSupportScreen(),
-            PendingTransactionReceipt.id: (context) =>
-                const PendingTransactionReceipt(),
-            TransactionReceipt.id: (context) => const TransactionReceipt(),
             GenerateTicket.id: (context) => const GenerateTicket(),
             DepositScreen.id: (context) => const DepositScreen(),
             WithdrawScreen.id: (context) => const WithdrawScreen(),

@@ -66,7 +66,7 @@ class TransactionCard extends StatelessWidget {
             ],
           ),
           Text(
-            '- $ticketAmount',
+            '$ticketAmount',
             style: Theme.of(context).textTheme.displaySmall!.copyWith(
                 color: isDebit! ? kErrorColor : kGreenColor, fontSize: 16),
           )

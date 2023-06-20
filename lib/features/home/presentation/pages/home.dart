@@ -8,8 +8,10 @@ import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/balance_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/pending_transaction_entity.dart';
+import 'package:hebron_pay/features/home/domain/entity/transaction_entity.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/get_pending_transactions_cubit/pending_transactions_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/transaction_cubit/transaction_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
@@ -17,7 +19,6 @@ import 'package:hebron_pay/features/home/presentation/pages/transaction_receipt.
 import 'package:hebron_pay/features/home/presentation/pages/withdraw.dart';
 import 'package:hebron_pay/features/home/presentation/widgets/transaction_card.dart';
 import 'package:hebron_pay/size_config.dart';
-
 import '../../../../core/widgets/widgets.dart';
 import '../bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import '../widgets/pending_transaction_card.dart';
@@ -33,17 +34,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   BalanceEntity? balanceDetails;
   List<PendingTransactionEntity>? pendingTransaction;
+  List<TransactionEntity>? transaction;
 
   /// Show Balance
-  void showBalance() async {
+  void _showBalance() async {
     await BlocProvider.of<BalanceCubit>(context).showBalance();
+  }
+
+  /// Get Pending Transactions
+  void _getPendingTransaction() async {
+    var res = await BlocProvider.of<PendingTransactionsCubit>(context)
+        .getPendingTransactions();
+    pendingTransaction = res;
   }
 
   /// Get Transactions
   void _getTransaction() async {
-    var res = await BlocProvider.of<PendingTransactionsCubit>(context)
-        .getPendingTransactions();
-    pendingTransaction = res;
+    var res =
+        await BlocProvider.of<TransactionCubit>(context).getTransactions();
+    transaction = res;
   }
 
   bool _isLoading = false;
@@ -51,8 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    print('Home');
-    showBalance();
+    _showBalance();
+    _getPendingTransaction();
     _getTransaction();
   }
 
@@ -109,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: _isLoading || balanceDetails == null
                       ? SpinKitWave(
                           color: kWhiteColor,
-                          size: getProportionateScreenWidth(60),
+                          size: getProportionateScreenWidth(25),
                         )
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,8 +352,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                       itemBuilder: (context, index) {
                                         return GestureDetector(
                                           onTap: () {
-                                            Navigator.pushNamed(context,
-                                                PendingTransactionReceipt.id);
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return PendingTransactionReceipt(
+                                                  position: index);
+                                            }));
                                           },
                                           child: Column(
                                             children: [
@@ -406,51 +419,72 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         SizedBox(height: getProportionateScreenHeight(10)),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, TransactionReceipt.id);
+                        BlocConsumer<TransactionCubit, TransactionState>(
+                          listener: (context, state) {
+                            if (state is TransactionFailure) {
+                              showErrorSnackBar(context, (state).errorMessage);
+                            }
                           },
-                          child: TransactionCard(
-                            ticketDescription: 'Chicken and Chips',
-                            ticketAmount: nairaAmount(2000),
-                            isDebit: true,
-                            timeCreated: '5:45PM',
-                            dateCreated: '25-10-2022',
-                          ),
-                        ),
-                        SizedBox(height: getProportionateScreenHeight(10)),
-                        TransactionCard(
-                          ticketDescription: 'Chicken and Chips',
-                          ticketAmount: nairaAmount(20000),
-                          isDebit: false,
-                          timeCreated: '5:45PM',
-                          dateCreated: '25-10-2022',
-                        ),
-                        SizedBox(height: getProportionateScreenHeight(10)),
-                        TransactionCard(
-                          ticketDescription: 'Drinks',
-                          ticketAmount: nairaAmount(2000),
-                          isDebit: true,
-                          timeCreated: '5:45PM',
-                          dateCreated: '25-10-2022',
-                        ),
-                        SizedBox(height: getProportionateScreenHeight(10)),
-                        TransactionCard(
-                          ticketDescription: 'Chicken and Chips',
-                          ticketAmount: nairaAmount(20000),
-                          isDebit: false,
-                          timeCreated: '5:45PM',
-                          dateCreated: '25-10-2022',
-                        ),
-                        SizedBox(height: getProportionateScreenHeight(10)),
-                        TransactionCard(
-                          ticketDescription: 'Drinks',
-                          ticketAmount: nairaAmount(2000),
-                          isDebit: true,
-                          timeCreated: '5:45PM',
-                          dateCreated: '25-10-2022',
-                        ),
-                        SizedBox(height: getProportionateScreenHeight(100))
+                          builder: (context, state) {
+                            if (state is TransactionLoading) {
+                              _isLoading = true;
+                            } else {
+                              _isLoading = false;
+                            }
+                            if (state is TransactionSuccess) {
+                              transaction = (state).userTrx;
+                            }
+                            return _isLoading
+                                ? SpinKitWave(
+                                    color: kPrimaryColor,
+                                    size: getProportionateScreenWidth(25))
+                                : SizedBox(
+                                    height: getProportionateScreenHeight(315),
+                                    child: ListView.builder(
+                                        physics: const ScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: 3,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) {
+                                                return TransactionReceipt(
+                                                    position: index);
+                                              }));
+                                            },
+                                            child: Column(
+                                              children: [
+                                                TransactionCard(
+                                                  ticketDescription:
+                                                      transaction![index]
+                                                          .description,
+                                                  ticketAmount: nairaAmount(
+                                                      transaction![index]
+                                                          .amount
+                                                          .toDouble()),
+                                                  isDebit: transaction![index]
+                                                              .type ==
+                                                          'debit'
+                                                      ? true
+                                                      : false,
+                                                  timeCreated:
+                                                      transaction![index].time,
+                                                  dateCreated:
+                                                      transaction![index].date,
+                                                ),
+                                                SizedBox(
+                                                    height:
+                                                        getProportionateScreenHeight(
+                                                            10))
+                                              ],
+                                            ),
+                                          );
+                                        }),
+                                  );
+                          },
+                        )
                       ],
                     ),
                   ),

@@ -34,6 +34,7 @@ String successTransaction = "assets/images/succesTransaction.png";
 String failedTransaction = "assets/images/failedTransaction.png";
 String qrSample = "assets/images/qrSample.png";
 String whiteLogo = "assets/images/whiteLogo.png";
+String splashLogo = "assets/images/splash_image.png";
 
 /// Assets - Icons
 String backArrowIcon = "assets/images/icons/backArrow.svg";

@@ -47,7 +47,8 @@ const String getPendingTransactionEndpoint =
     "$baseURL/api/Transaction/GetPendingTransactions";
 
 /// Get Transaction Endpoint
-const String getTransactionEndpoint = "$baseURL/api/Transaction/GetTransaction";
+const String getTransactionEndpoint =
+    "$baseURL/api/Transaction/GetUsersTransactions";
 
 /// Get Pending Transactions Endpoint
 const String getSubAccountEndpoint = "$baseURL/api/Transaction/GetSubAccount";

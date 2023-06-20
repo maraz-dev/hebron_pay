@@ -20,26 +20,31 @@ import 'package:hebron_pay/features/home/data/datasource/fund_wallet_remote.dart
 import 'package:hebron_pay/features/home/data/datasource/generate_eod_remote.dart';
 import 'package:hebron_pay/features/home/data/datasource/generate_ticket_remote.dart';
 import 'package:hebron_pay/features/home/data/datasource/get_pending_transaction_remote.dart';
+import 'package:hebron_pay/features/home/data/datasource/transaction_remote.dart';
 import 'package:hebron_pay/features/home/data/repository/balance_repo_impl.dart';
 import 'package:hebron_pay/features/home/data/repository/fund_wallet_repo_impl.dart';
 import 'package:hebron_pay/features/home/data/repository/generate_eod_repo_impl.dart';
 import 'package:hebron_pay/features/home/data/repository/generate_ticket_repo_impl.dart';
 import 'package:hebron_pay/features/home/data/repository/get_pending_transaction_repo_impl.dart';
+import 'package:hebron_pay/features/home/data/repository/transaction_repo_impl.dart';
 import 'package:hebron_pay/features/home/domain/repository/balance_repo.dart';
 import 'package:hebron_pay/features/home/domain/repository/fund_wallet_repo.dart';
 import 'package:hebron_pay/features/home/domain/repository/generate_eod_repo.dart';
 import 'package:hebron_pay/features/home/domain/repository/generate_ticket_repo.dart';
 import 'package:hebron_pay/features/home/domain/repository/pending_transaction_repo.dart';
+import 'package:hebron_pay/features/home/domain/repository/transaction_remote.dart';
 import 'package:hebron_pay/features/home/domain/usecase/balance_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/fund_wallet_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/generate_eod_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/generate_ticket_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/pending_transaction_usecase.dart';
+import 'package:hebron_pay/features/home/domain/usecase/transaction_usecase.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/fund_wallet_cubit/fund_wallet_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_ticket_cubit/generate_ticket_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/get_pending_transactions_cubit/pending_transactions_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/transaction_cubit/transaction_cubit.dart';
 import 'package:hebron_pay/features/profile/data/datasources/change_password_remote.dart';
 import 'package:hebron_pay/features/profile/data/repositories/change_password_repo_impl.dart';
 import 'package:hebron_pay/features/profile/domain/repositories/change_password_repo.dart';
@@ -70,6 +75,8 @@ Future<void> init() async {
       () => GenerateEodCubit(usecase: sl.call()));
   sl.registerFactory<PendingTransactionsCubit>(
       () => PendingTransactionsCubit(usecase: sl.call()));
+  sl.registerFactory<TransactionCubit>(
+      () => TransactionCubit(usecase: sl.call()));
 
   ///Usecases
   sl.registerLazySingleton<LoginUsecase>(
@@ -92,6 +99,8 @@ Future<void> init() async {
       () => GenerateEodUsecase(repository: sl.call()));
   sl.registerLazySingleton<PendingTransactionUsecase>(
       () => PendingTransactionUsecase(pendingTransactionRepo: sl.call()));
+  sl.registerLazySingleton<TransactionUsecase>(
+      () => TransactionUsecase(transactionRepo: sl.call()));
 
   ///Repositories
   sl.registerLazySingleton<LoginRepository>(() => LoginRepoImpl(
@@ -112,6 +121,8 @@ Future<void> init() async {
       () => GenerateEodRepoImpl(remote: sl.call(), networkInfo: sl.call()));
   sl.registerLazySingleton<PendingTransactionRepo>(() =>
       GetPendingTransactionRepoImpl(networkInfo: sl.call(), remote: sl.call()));
+  sl.registerLazySingleton<TransactionRepo>(
+      () => GetTransactionRepoImpl(networkInfo: sl.call(), remote: sl.call()));
 
   ///Datasources
   sl.registerLazySingleton<LoginRemoteDataSource>(
@@ -131,6 +142,8 @@ Future<void> init() async {
   sl.registerLazySingleton<GenerateEodRemote>(() => GenerateEodRemoteImpl());
   sl.registerLazySingleton<GetPendingTransactionRemote>(
       () => GetPendingTransactionRemoteImpl());
+  sl.registerLazySingleton<GetTransactionRemote>(
+      () => GetTransactionRemoteImpl());
 
   ///Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());

@@ -58,8 +58,6 @@ class BalanceRepoImpl implements BalanceRepo {
   Future<BalanceEntity> getBalance() async {
     try {
       var response = await remoteDatasource.showBalance();
-      print('Balance is');
-      print(response);
       return response;
     } on Exception {
       rethrow;
