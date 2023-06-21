@@ -66,13 +66,15 @@ class _LoginScreenState extends State<LoginScreen> {
             if (userDetails!.isOtpVerified == false) {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return OTPVerification(
-                    emailAddress: _emailAddressController.text);
+                    emailAddress: _emailAddressController.text.trim());
               }));
             } else {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return DashBoard(loggedInUser: userDetails!);
               }));
             }
+            _emailAddressController.clear();
+            _passwordController.clear();
           }
           if (state is LoginFailure) {
             final exception = (state).errorMessage;

@@ -12,6 +12,7 @@ import 'package:hebron_pay/features/home/presentation/bloc/fund_wallet_cubit/fun
 import 'package:hebron_pay/features/home/presentation/bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_ticket_cubit/generate_ticket_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/get_pending_transactions_cubit/pending_transactions_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/set_pin_cubit/set_pin_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/transaction_cubit/transaction_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
@@ -63,7 +64,9 @@ class HebronPay extends StatelessWidget {
             create: (_) => di.sl<GenerateEodCubit>()),
         BlocProvider<PendingTransactionsCubit>(
             create: (_) => di.sl<PendingTransactionsCubit>()),
-        BlocProvider<TransactionCubit>(create: (_) => di.sl<TransactionCubit>())
+        BlocProvider<TransactionCubit>(
+            create: (_) => di.sl<TransactionCubit>()),
+        BlocProvider(create: (_) => di.sl<SetPinCubit>())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

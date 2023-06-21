@@ -17,7 +17,7 @@ class WithdrawScreen extends StatefulWidget {
 
 class _WithdrawScreenState extends State<WithdrawScreen> {
   /// [GlobalKey] to Validate the Sign In form
-  final GlobalKey _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
 
   /// The [TextEditingController] for the Amount TextField
   final TextEditingController _amountController = TextEditingController();
@@ -33,7 +33,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
           ),
         ),
         title: Text(
-          'Deposit',
+          'Withdraw Funds',
           style: Theme.of(context).textTheme.displaySmall,
         ),
       ),

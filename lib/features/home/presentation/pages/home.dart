@@ -5,12 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
+import 'package:hebron_pay/core/widgets/transaction_pin.dart';
 import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/balance_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/pending_transaction_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/transaction_entity.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/get_pending_transactions_cubit/pending_transactions_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/set_pin_cubit/set_pin_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/transaction_cubit/transaction_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
@@ -19,6 +21,7 @@ import 'package:hebron_pay/features/home/presentation/pages/transaction_receipt.
 import 'package:hebron_pay/features/home/presentation/pages/withdraw.dart';
 import 'package:hebron_pay/features/home/presentation/widgets/transaction_card.dart';
 import 'package:hebron_pay/size_config.dart';
+import 'package:pinput/pinput.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import '../widgets/pending_transaction_card.dart';
@@ -35,6 +38,15 @@ class _HomeScreenState extends State<HomeScreen> {
   BalanceEntity? balanceDetails;
   List<PendingTransactionEntity>? pendingTransaction;
   List<TransactionEntity>? transaction;
+  String? errorText;
+
+  /// Set PIN Controller
+  final TextEditingController _pinController = TextEditingController();
+  final TextEditingController _setPinContoller = TextEditingController();
+  final TextEditingController _confirmSetPinController =
+      TextEditingController();
+  final GlobalKey<FormState> _formkey = GlobalKey();
+  final GlobalKey<FormState> _pinFormkey = GlobalKey();
 
   /// Show Balance
   void _showBalance() async {
@@ -103,6 +115,16 @@ class _HomeScreenState extends State<HomeScreen> {
             }
             if (state is BalanceSuccess) {
               balanceDetails = (state).walletDetails;
+              if (balanceDetails!.walletPin == 0) {
+                print('Balance PIN has not been Set');
+
+                /// Build the Transaction PIN bottomsheet when the change pin button is clicked
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _setPinBottomSheet(context);
+                });
+              } else {
+                print('Balance PIN has been set');
+              }
             }
             return Column(
               children: [
@@ -349,31 +371,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                       physics: const ScrollPhysics(),
                                       shrinkWrap: true,
                                       itemCount: 2,
-                                      itemBuilder: (context, index) {
+                                      itemBuilder: (context, pendingIndex) {
                                         return GestureDetector(
                                           onTap: () {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) {
-                                              return PendingTransactionReceipt(
-                                                  position: index);
-                                            }));
+                                            print("I'm here");
+                                            _showPinBottomSheet(
+                                                context, pendingIndex);
                                           },
                                           child: Column(
                                             children: [
                                               PendingTransactionCard(
                                                 ticketDescription:
-                                                    pendingTransaction![index]
+                                                    pendingTransaction![
+                                                            pendingIndex]
                                                         .description,
                                                 ticketAmount: nairaAmount(
-                                                    pendingTransaction![index]
+                                                    pendingTransaction![
+                                                            pendingIndex]
                                                         .amount
                                                         .toDouble()),
                                                 timeCreated:
-                                                    pendingTransaction![index]
+                                                    pendingTransaction![
+                                                            pendingIndex]
                                                         .time,
                                                 dateCreated:
-                                                    pendingTransaction![index]
+                                                    pendingTransaction![
+                                                            pendingIndex]
                                                         .date,
                                               ),
                                               SizedBox(
@@ -495,5 +518,257 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  /// Transaction PIN Modal Sheet
+  void _setPinBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        isDismissible: false,
+        builder: (context) {
+          return WillPopScope(
+            onWillPop: () async {
+              Navigator.pop(context);
+              return false;
+            },
+            child: BlocConsumer<SetPinCubit, SetPinState>(
+              listener: (context, state) {
+                if (state is SetPinSuccess) {
+                  Navigator.pop(context);
+                  showSuccessSnackBar(
+                      context, 'Transaction has been set Successfully');
+                }
+                if (state is SetPinFailure) {
+                  errorText = (state).errorMessage;
+                }
+              },
+              builder: (context, state) {
+                if (state is SetPinLoading) {
+                  errorText = null;
+                  _setPinContoller.clear();
+                  _confirmSetPinController.clear();
+                  _isLoading = true;
+                } else {
+                  _isLoading = false;
+                }
+                return Container(
+                  padding: EdgeInsets.only(
+                      top: getProportionateScreenHeight(20),
+                      left: getProportionateScreenWidth(20),
+                      right: getProportionateScreenWidth(20),
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  decoration: const BoxDecoration(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(20)),
+                    color: kWhiteColor,
+                  ),
+                  child: Form(
+                    key: _formkey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Center(
+                          child: Text(
+                            'Set Transaction PIN',
+                            style: Theme.of(context).textTheme.displayMedium,
+                          ),
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(5)),
+                        Text(
+                          'For you to be able to perform and view Transactions, you have to set a Transaction PIN',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(20)),
+                        errorText == null
+                            ? Container()
+                            : Center(
+                                child: Text(
+                                errorText!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                        color: kErrorColor,
+                                        fontWeight: FontWeight.bold),
+                              )),
+                        SizedBox(height: getProportionateScreenHeight(20)),
+
+                        /// Transaction PIN Box
+                        const Center(child: Text('Enter Transaction PIN')),
+                        SizedBox(height: getProportionateScreenHeight(15)),
+                        Center(
+                          child: Pinput(
+                            controller: _setPinContoller,
+                            onCompleted: (value) {},
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Field Cannot be Empty';
+                              }
+                              return null;
+                            },
+                            length: 4,
+                            obscureText: true,
+                            textInputAction: TextInputAction.done,
+                            defaultPinTheme: kDefaultPin(context),
+                            focusedPinTheme: kFocusedPin(context),
+                          ),
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(20)),
+
+                        /// Confirm Box
+                        const Center(child: Text('Confirm Transaction PIN')),
+                        SizedBox(height: getProportionateScreenHeight(15)),
+                        Center(
+                          child: Pinput(
+                            controller: _confirmSetPinController,
+                            onCompleted: (value) {},
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Field Cannot be Empty';
+                              }
+                              return null;
+                            },
+                            length: 4,
+                            obscureText: true,
+                            textInputAction: TextInputAction.done,
+                            defaultPinTheme: kDefaultPin(context),
+                            focusedPinTheme: kFocusedPin(context),
+                          ),
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(30)),
+                        GeneralButton(
+                            isLoading: _isLoading,
+                            text: 'Continue',
+                            onPressed: () async {
+                              FocusScope.of(context).unfocus();
+                              if (!_formkey.currentState!.validate()) return;
+                              await BlocProvider.of<SetPinCubit>(context)
+                                  .setPin({
+                                "walletPin": int.parse(_setPinContoller.text),
+                                "confirmWalletPin":
+                                    int.parse(_confirmSetPinController.text)
+                              });
+                            }),
+                        SizedBox(height: getProportionateScreenHeight(20))
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
+  }
+
+  /// Transaction PIN Modal Sheet
+  void _showPinBottomSheet(BuildContext context, int index) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        isDismissible: false,
+        builder: (context) {
+          return WillPopScope(
+            onWillPop: () async {
+              Navigator.pop(context);
+              errorText = null;
+              return false;
+            },
+            child: Container(
+              padding: EdgeInsets.only(
+                  top: getProportionateScreenHeight(20),
+                  left: getProportionateScreenWidth(20),
+                  right: getProportionateScreenWidth(20),
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                color: kWhiteColor,
+              ),
+              child: Form(
+                key: _pinFormkey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Center(
+                      child: Text(
+                        'Enter PIN',
+                        style: Theme.of(context).textTheme.displayMedium,
+                      ),
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(5)),
+                    Text(
+                      'Enter your Transaction PIN below to continue',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    errorText == null
+                        ? Container()
+                        : Center(
+                            child: Text(
+                            errorText!,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                    color: kErrorColor,
+                                    fontWeight: FontWeight.bold),
+                          )),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+
+                    /// Transaction PIN Box
+                    Center(
+                      child: Pinput(
+                        controller: _pinController,
+                        length: 4,
+                        obscureText: true,
+                        textInputAction: TextInputAction.done,
+                        defaultPinTheme: kDefaultPin(context),
+                        focusedPinTheme: kFocusedPin(context),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Field Cannot be Empty';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(30)),
+                    GeneralButton(
+                        text: 'Continue',
+                        onPressed: () {
+                          if (!_pinFormkey.currentState!.validate()) return;
+                          if (balanceDetails!.walletPin ==
+                              int.parse(_pinController.text)) {
+                            Navigator.pop(context);
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return PendingTransactionReceipt(position: index);
+                            }));
+                            errorText = null;
+                            _pinController.clear();
+                          } else {
+                            print('Incorrect PIN');
+                            setState(() {
+                              errorText = 'Incorrect Pin';
+                            });
+                            _pinController.clear();
+                          }
+                        }),
+                    SizedBox(height: getProportionateScreenHeight(20))
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }

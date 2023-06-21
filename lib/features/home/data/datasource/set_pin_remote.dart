@@ -5,18 +5,19 @@ import 'package:hebron_pay/core/data/model.dart';
 import 'package:hebron_pay/endpoints.dart';
 import 'package:http/http.dart' as http;
 
-abstract class GetPendingTransactionRemote {
-  Future<ResponseModel> getPendingTransactionAPI();
+abstract class SetPinRemote {
+  Future<ResponseModel> setPinApi(Map<String, dynamic> mapBody);
 }
 
-class GetPendingTransactionRemoteImpl implements GetPendingTransactionRemote {
+class SetPinRemoteImpl implements SetPinRemote {
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
   @override
-  Future<ResponseModel> getPendingTransactionAPI() async {
+  Future<ResponseModel> setPinApi(Map<String, dynamic> mapBody) async {
     String? token = await secureStorage.read(key: 'userToken');
-    var res = await http.get(
-      Uri.parse(getPendingTransactionEndpoint),
+
+    var res = await http.post(
+      Uri.parse(setPinEndpoint),
+      body: json.encode(mapBody),
       headers: {
         'Content-type': 'application/json',
         'Accept': 'text/plain',
