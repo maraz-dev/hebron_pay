@@ -44,7 +44,7 @@ const String deleteTicketEndpoint = "$baseURL/api/Transaction/DeleteTicket";
 
 /// Get Pending Transactions Endpoint
 const String getPendingTransactionEndpoint =
-    "$baseURL/api/Transaction/GetPendingTransactions";
+    "$baseURL/api/Transaction/GetUsersPendingTransactions";
 
 /// Get Transaction Endpoint
 const String getTransactionEndpoint =
@@ -58,3 +58,13 @@ const String fundWalletEndpoint = "$baseURL/api/Transaction/FundWallet";
 
 /// Generate EOD
 const String generateEodEndpoint = "$baseURL/api/Transaction/GenerateEod";
+
+/// Get Banks
+const String getBankEndpoint = "$baseURL/api/Transaction/GetBanks";
+
+/// Resolve Account Details
+const String resolveAccountDetailsEndpoint =
+    "$baseURL/api/Transaction/ResolveBankAccountDetails";
+
+/// Withdraw from Wallet
+const String withdrawEndpoint = "$baseURL/api/Transaction/WithdrawFromWallet";

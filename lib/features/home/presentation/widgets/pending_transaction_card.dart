@@ -31,12 +31,17 @@ class PendingTransactionCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                ticketDescription!,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: kDarkGrey),
+              SizedBox(
+                width: getProportionateScreenWidth(150),
+                child: Text(
+                  ticketDescription!,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: kDarkGrey),
+                ),
               ),
               Container(
                 padding: EdgeInsets.all(getProportionateScreenWidth(5)),

@@ -23,7 +23,7 @@ class OtpVerificationRepoImpl implements OtpVerificationRepo {
           throw response.error['message'];
         } else {
           var message = response.data;
-          return response.data;
+          return message;
         }
       } on Exception catch (e) {
         print(e.toString());

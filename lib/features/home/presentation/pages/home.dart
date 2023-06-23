@@ -756,6 +756,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             errorText = null;
                             _pinController.clear();
                           } else {
+                            Navigator.pop(context);
+                            showErrorSnackBar(context, 'Incorrect Pin');
                             print('Incorrect PIN');
                             setState(() {
                               errorText = 'Incorrect Pin';

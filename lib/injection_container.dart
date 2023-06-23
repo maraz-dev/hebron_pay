@@ -22,6 +22,7 @@ import 'package:hebron_pay/features/home/data/datasource/generate_ticket_remote.
 import 'package:hebron_pay/features/home/data/datasource/get_pending_transaction_remote.dart';
 import 'package:hebron_pay/features/home/data/datasource/set_pin_remote.dart';
 import 'package:hebron_pay/features/home/data/datasource/transaction_remote.dart';
+import 'package:hebron_pay/features/home/data/datasource/withdraw_remote.dart';
 import 'package:hebron_pay/features/home/data/repository/balance_repo_impl.dart';
 import 'package:hebron_pay/features/home/data/repository/fund_wallet_repo_impl.dart';
 import 'package:hebron_pay/features/home/data/repository/generate_eod_repo_impl.dart';
@@ -29,6 +30,7 @@ import 'package:hebron_pay/features/home/data/repository/generate_ticket_repo_im
 import 'package:hebron_pay/features/home/data/repository/get_pending_transaction_repo_impl.dart';
 import 'package:hebron_pay/features/home/data/repository/set_pin_repo_impl.dart';
 import 'package:hebron_pay/features/home/data/repository/transaction_repo_impl.dart';
+import 'package:hebron_pay/features/home/data/repository/withdraw_repo_impl.dart';
 import 'package:hebron_pay/features/home/domain/repository/balance_repo.dart';
 import 'package:hebron_pay/features/home/domain/repository/fund_wallet_repo.dart';
 import 'package:hebron_pay/features/home/domain/repository/generate_eod_repo.dart';
@@ -36,20 +38,27 @@ import 'package:hebron_pay/features/home/domain/repository/generate_ticket_repo.
 import 'package:hebron_pay/features/home/domain/repository/pending_transaction_repo.dart';
 import 'package:hebron_pay/features/home/domain/repository/set_pin_repo.dart';
 import 'package:hebron_pay/features/home/domain/repository/transaction_remote.dart';
+import 'package:hebron_pay/features/home/domain/repository/withdraw_repo.dart';
 import 'package:hebron_pay/features/home/domain/usecase/balance_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/fund_wallet_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/generate_eod_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/generate_ticket_usecase.dart';
+import 'package:hebron_pay/features/home/domain/usecase/getbanks_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/pending_transaction_usecase.dart';
+import 'package:hebron_pay/features/home/domain/usecase/resolve_acct_details_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/set_pin_usecase.dart';
 import 'package:hebron_pay/features/home/domain/usecase/transaction_usecase.dart';
+import 'package:hebron_pay/features/home/domain/usecase/withdraw_usecase.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/bank_details_cubit/bank_details_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/fund_wallet_cubit/fund_wallet_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_ticket_cubit/generate_ticket_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/get_bank_cubit/get_bank_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/get_pending_transactions_cubit/pending_transactions_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/set_pin_cubit/set_pin_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/transaction_cubit/transaction_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/withdraw_cubit.dart/withdraw_cubit.dart';
 import 'package:hebron_pay/features/profile/data/datasources/change_password_remote.dart';
 import 'package:hebron_pay/features/profile/data/repositories/change_password_repo_impl.dart';
 import 'package:hebron_pay/features/profile/domain/repositories/change_password_repo.dart';
@@ -83,6 +92,10 @@ Future<void> init() async {
   sl.registerFactory<TransactionCubit>(
       () => TransactionCubit(usecase: sl.call()));
   sl.registerFactory<SetPinCubit>(() => SetPinCubit(usecase: sl.call()));
+  sl.registerFactory<GetBankCubit>(() => GetBankCubit(usecase: sl.call()));
+  sl.registerFactory<BankDetailsCubit>(
+      () => BankDetailsCubit(usecase: sl.call()));
+  sl.registerFactory<WithdrawCubit>(() => WithdrawCubit(usecase: sl.call()));
 
   ///Usecases
   sl.registerLazySingleton<LoginUsecase>(
@@ -108,6 +121,12 @@ Future<void> init() async {
   sl.registerLazySingleton<TransactionUsecase>(
       () => TransactionUsecase(transactionRepo: sl.call()));
   sl.registerLazySingleton<SetPinUsecase>(() => SetPinUsecase(repo: sl.call()));
+  sl.registerLazySingleton<GetBanksUsecase>(
+      () => GetBanksUsecase(repo: sl.call()));
+  sl.registerLazySingleton<ResolveAcctDetailsUsecase>(
+      () => ResolveAcctDetailsUsecase(repo: sl.call()));
+  sl.registerLazySingleton<WithdrawUsecase>(
+      () => WithdrawUsecase(repo: sl.call()));
 
   ///Repositories
   sl.registerLazySingleton<LoginRepository>(() => LoginRepoImpl(
@@ -132,6 +151,8 @@ Future<void> init() async {
       () => GetTransactionRepoImpl(networkInfo: sl.call(), remote: sl.call()));
   sl.registerLazySingleton<SetPinRepo>(
       () => SetPinRepoImpl(networkInfo: sl.call(), remote: sl.call()));
+  sl.registerLazySingleton<WithdrawRepo>(
+      () => WithdrawRepoImpl(networkInfo: sl.call(), remote: sl.call()));
 
   ///Datasources
   sl.registerLazySingleton<LoginRemoteDataSource>(
@@ -154,6 +175,7 @@ Future<void> init() async {
   sl.registerLazySingleton<GetTransactionRemote>(
       () => GetTransactionRemoteImpl());
   sl.registerLazySingleton<SetPinRemote>(() => SetPinRemoteImpl());
+  sl.registerLazySingleton<WithdrawRemote>(() => WithdrawRemoteImpl());
 
   ///Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());

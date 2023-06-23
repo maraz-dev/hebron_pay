@@ -8,12 +8,15 @@ import 'package:hebron_pay/features/authentication/presentation/pages/forgot_pas
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/sign_up.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/bank_details_cubit/bank_details_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/fund_wallet_cubit/fund_wallet_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_ticket_cubit/generate_ticket_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/get_bank_cubit/get_bank_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/get_pending_transactions_cubit/pending_transactions_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/set_pin_cubit/set_pin_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/transaction_cubit/transaction_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/withdraw_cubit.dart/withdraw_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/home.dart';
@@ -66,7 +69,10 @@ class HebronPay extends StatelessWidget {
             create: (_) => di.sl<PendingTransactionsCubit>()),
         BlocProvider<TransactionCubit>(
             create: (_) => di.sl<TransactionCubit>()),
-        BlocProvider(create: (_) => di.sl<SetPinCubit>())
+        BlocProvider(create: (_) => di.sl<SetPinCubit>()),
+        BlocProvider(create: (_) => di.sl<GetBankCubit>()),
+        BlocProvider(create: (_) => di.sl<BankDetailsCubit>()),
+        BlocProvider(create: (_) => di.sl<WithdrawCubit>())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

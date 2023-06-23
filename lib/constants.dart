@@ -126,3 +126,12 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSuccessSnackBar(
         right: getProportionateScreenWidth(10)),
   ));
 }
+
+/// Header file
+Map<String, String> headerFile(String? token) {
+  return {
+    'Content-type': 'application/json',
+    'Accept': 'text/plain',
+    'Authorization': 'Bearer ${token!}'
+  };
+}

@@ -26,12 +26,15 @@ class TicketDetailsProps extends StatelessWidget {
                 .bodyLarge!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
-          Text(
-            value!,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: kPrimaryColor),
+          SizedBox(
+            width: getProportionateScreenWidth(220),
+            child: Text(
+              value!,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(color: kPrimaryColor),
+            ),
           ),
         ],
       ),
