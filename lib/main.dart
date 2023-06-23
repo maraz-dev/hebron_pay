@@ -20,9 +20,6 @@ import 'package:hebron_pay/features/home/presentation/bloc/transaction_cubit/tra
 import 'package:hebron_pay/features/home/presentation/bloc/withdraw_cubit.dart/withdraw_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
-import 'package:hebron_pay/features/home/presentation/pages/home.dart';
-import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
-import 'package:hebron_pay/features/home/presentation/pages/transaction_receipt.dart';
 import 'package:hebron_pay/features/home/presentation/pages/withdraw.dart';
 import 'package:hebron_pay/features/onboarding/presentation/pages/onboarding.dart';
 import 'package:hebron_pay/features/profile/presentation/cubit/profile_cubit.dart';

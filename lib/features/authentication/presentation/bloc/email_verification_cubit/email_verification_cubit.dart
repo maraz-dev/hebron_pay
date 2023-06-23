@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:hebron_pay/core/domain/entity.dart';
 import 'package:hebron_pay/features/authentication/domain/usecases/otp_verification_usecase.dart';
 
 part 'email_verification_state.dart';

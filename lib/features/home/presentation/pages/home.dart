@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
-import 'package:hebron_pay/core/widgets/transaction_pin.dart';
 import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/balance_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/pending_transaction_entity.dart';

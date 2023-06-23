@@ -6,7 +6,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
-import 'package:hebron_pay/core/widgets/transaction_pin.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
 import 'package:hebron_pay/features/home/domain/entity/account_details_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/bank_entity.dart';
