@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
 import 'package:hebron_pay/features/home/domain/entity/pending_transaction_entity.dart';
+import 'package:hebron_pay/features/home/presentation/bloc/delete_ticket_cubit/delete_ticket_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/get_pending_transactions_cubit/pending_transactions_cubit.dart';
 import 'package:hebron_pay/size_config.dart';
 
@@ -117,6 +118,7 @@ class _PendingTransactionReceiptState extends State<PendingTransactionReceipt> {
                             const TicketDivider(),
                             TicketDetailsProps(
                               propertyName: 'Amount',
+                              isImportant: true,
                               value: nairaAmount(
                                   pendingTransaction![widget.position]
                                       .amount
@@ -140,13 +142,39 @@ class _PendingTransactionReceiptState extends State<PendingTransactionReceipt> {
                       SizedBox(height: getProportionateScreenHeight(30)),
                       GeneralButton(text: 'Download Receipt', onPressed: () {}),
                       SizedBox(height: getProportionateScreenHeight(10)),
-                      DeleteReceiptButton(
-                          text: 'Delete Receipt', onPressed: () {})
+                      BlocConsumer<DeleteTicketCubit, DeleteTicketState>(
+                        listener: (context, state) {
+                          if (state is DeleteTicketFailure) {
+                            showErrorSnackBar(context, (state).errorMessage);
+                          }
+                          if (state is DeleteTicketSuccess) {
+                            showSuccessSnackBar(
+                                context, 'Ticket Successfully Deleted');
+                            Navigator.pop(context);
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is DeleteTicketLoading) {
+                            _isLoading = true;
+                          } else {
+                            _isLoading = false;
+                          }
+                          return DeleteReceiptButton(
+                              isLoading: _isLoading,
+                              text: 'Delete Receipt',
+                              onPressed: _deleteReceipt);
+                        },
+                      )
                     ],
                   );
           },
         ),
       ),
     );
+  }
+
+  void _deleteReceipt() async {
+    await BlocProvider.of<DeleteTicketCubit>(context)
+        .deleteTicket(pendingTransaction![widget.position].reference);
   }
 }

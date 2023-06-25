@@ -380,7 +380,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   //   }
                                   // });
                                 },
-                                textInputAction: TextInputAction.next,
+                                textInputAction: TextInputAction.done,
                                 textInputType: TextInputType.text,
                                 validator: (value) {
                                   validatePassword(value!);
@@ -401,7 +401,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 hintText: 'Confirm Password',
                                 title: 'Confirm Password',
                                 onChanged: (value) {},
-                                textInputAction: TextInputAction.next,
+                                textInputAction: TextInputAction.done,
                                 textInputType: TextInputType.text,
                                 validator: (value) {
                                   if (value!.isEmpty) {

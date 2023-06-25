@@ -49,7 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Show Balance
   void _showBalance() async {
-    await BlocProvider.of<BalanceCubit>(context).showBalance();
+    var balance = await BlocProvider.of<BalanceCubit>(context).showBalance();
+    balanceDetails = balance;
   }
 
   /// Get Pending Transactions
@@ -67,6 +68,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   bool _isLoading = false;
+
+  Future<void> _refreshData() async {
+    // Perform your initialization tasks here
+    await Future.delayed(
+        Duration(seconds: 1)); // Simulating some asynchronous task
+    setState(() {
+      // Update the UI with the refreshed data
+      _showBalance();
+      _getPendingTransaction();
+      _getTransaction();
+    });
+  }
 
   @override
   void initState() {
@@ -364,50 +377,68 @@ class _HomeScreenState extends State<HomeScreen> {
                                     color: kPrimaryColor,
                                     size: getProportionateScreenWidth(25),
                                   )
-                                : SizedBox(
-                                    height: getProportionateScreenHeight(170),
-                                    child: ListView.builder(
-                                      physics: const ScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: 2,
-                                      itemBuilder: (context, pendingIndex) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            print("I'm here");
-                                            _showPinBottomSheet(
-                                                context, pendingIndex);
-                                          },
-                                          child: Column(
-                                            children: [
-                                              PendingTransactionCard(
-                                                ticketDescription:
-                                                    pendingTransaction![
-                                                            pendingIndex]
-                                                        .description,
-                                                ticketAmount: nairaAmount(
-                                                    pendingTransaction![
-                                                            pendingIndex]
-                                                        .amount
-                                                        .toDouble()),
-                                                timeCreated:
-                                                    pendingTransaction![
-                                                            pendingIndex]
-                                                        .time,
-                                                dateCreated:
-                                                    pendingTransaction![
-                                                            pendingIndex]
-                                                        .date,
-                                              ),
-                                              SizedBox(
-                                                  height:
-                                                      getProportionateScreenHeight(
-                                                          10)),
-                                            ],
+                                : pendingTransaction!.isEmpty ||
+                                        pendingTransaction == null
+                                    ? Center(
+                                        child: Column(
+                                        children: [
+                                          Text(
+                                            "You don't have any Pending Transactions yet...",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium!
+                                                .copyWith(color: kLightGrey),
                                           ),
-                                        );
-                                      },
-                                    ),
-                                  );
+                                          SizedBox(
+                                            height:
+                                                getProportionateScreenHeight(
+                                                    10),
+                                          )
+                                        ],
+                                      ))
+                                    : ListView.builder(
+                                        physics: const ScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount:
+                                            pendingTransaction!.length < 2
+                                                ? pendingTransaction!.length
+                                                : 2,
+                                        itemBuilder: (context, pendingIndex) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              _showPinBottomSheet(
+                                                  context, pendingIndex);
+                                            },
+                                            child: Column(
+                                              children: [
+                                                PendingTransactionCard(
+                                                  ticketDescription:
+                                                      pendingTransaction![
+                                                              pendingIndex]
+                                                          .description,
+                                                  ticketAmount: nairaAmount(
+                                                      pendingTransaction![
+                                                              pendingIndex]
+                                                          .amount
+                                                          .toDouble()),
+                                                  timeCreated:
+                                                      pendingTransaction![
+                                                              pendingIndex]
+                                                          .time,
+                                                  dateCreated:
+                                                      pendingTransaction![
+                                                              pendingIndex]
+                                                          .date,
+                                                ),
+                                                SizedBox(
+                                                    height:
+                                                        getProportionateScreenHeight(
+                                                            10)),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
                           },
                         ),
 
@@ -460,51 +491,76 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? SpinKitWave(
                                     color: kPrimaryColor,
                                     size: getProportionateScreenWidth(25))
-                                : SizedBox(
-                                    height: getProportionateScreenHeight(315),
-                                    child: ListView.builder(
-                                        physics: const ScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: 3,
-                                        itemBuilder: (context, index) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                return TransactionReceipt(
-                                                    position: index);
-                                              }));
-                                            },
-                                            child: Column(
-                                              children: [
-                                                TransactionCard(
-                                                  ticketDescription:
-                                                      transaction![index]
-                                                          .description,
-                                                  ticketAmount: nairaAmount(
-                                                      transaction![index]
-                                                          .amount
-                                                          .toDouble()),
-                                                  isDebit: transaction![index]
-                                                              .type ==
-                                                          'debit'
-                                                      ? true
-                                                      : false,
-                                                  timeCreated:
-                                                      transaction![index].time,
-                                                  dateCreated:
-                                                      transaction![index].date,
-                                                ),
-                                                SizedBox(
-                                                    height:
-                                                        getProportionateScreenHeight(
-                                                            10))
-                                              ],
+                                : transaction!.isEmpty || transaction == null
+                                    ? Center(
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "You don't have any Pending Transactions yet...",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(color: kLightGrey),
                                             ),
-                                          );
-                                        }),
-                                  );
+                                            SizedBox(
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      10),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    : SizedBox(
+                                        height:
+                                            getProportionateScreenHeight(315),
+                                        child: ListView.builder(
+                                            physics: const ScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: transaction!.length < 3
+                                                ? transaction!.length
+                                                : 3,
+                                            itemBuilder: (context, index) {
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                    return TransactionReceipt(
+                                                        position: index);
+                                                  }));
+                                                },
+                                                child: Column(
+                                                  children: [
+                                                    TransactionCard(
+                                                      ticketDescription:
+                                                          transaction![index]
+                                                              .description,
+                                                      ticketAmount: nairaAmount(
+                                                          transaction![index]
+                                                              .amount
+                                                              .toDouble()),
+                                                      isDebit:
+                                                          transaction![index]
+                                                                      .type ==
+                                                                  'debit'
+                                                              ? true
+                                                              : false,
+                                                      timeCreated:
+                                                          transaction![index]
+                                                              .time,
+                                                      dateCreated:
+                                                          transaction![index]
+                                                              .date,
+                                                    ),
+                                                    SizedBox(
+                                                        height:
+                                                            getProportionateScreenHeight(
+                                                                10))
+                                                  ],
+                                                ),
+                                              );
+                                            }),
+                                      );
                           },
                         )
                       ],

@@ -7,10 +7,12 @@ class TicketDetailsProps extends StatelessWidget {
     super.key,
     required this.propertyName,
     required this.value,
+    this.isImportant = false,
   });
 
   final String? propertyName;
   final String? value;
+  final bool isImportant;
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +32,8 @@ class TicketDetailsProps extends StatelessWidget {
             width: getProportionateScreenWidth(220),
             child: Text(
               value!,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(color: kPrimaryColor),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: kPrimaryColor, fontSize: isImportant ? 20 : 14),
             ),
           ),
         ],

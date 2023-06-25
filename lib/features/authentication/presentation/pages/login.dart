@@ -63,16 +63,15 @@ class _LoginScreenState extends State<LoginScreen> {
       bottomSheet: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            if (userDetails!.isOtpVerified == false) {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return OTPVerification(
-                    emailAddress: _emailAddressController.text.trim());
-              }));
-            } else {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return DashBoard(loggedInUser: userDetails!);
-              }));
-            }
+            userDetails?.isOtpVerified == false
+                ? Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return OTPVerification(emailAddress: userDetails!.email);
+                  }))
+                : Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                    return DashBoard(loggedInUser: userDetails!);
+                  }));
+
             _emailAddressController.clear();
             _passwordController.clear();
           }
@@ -152,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: 'Password',
                         title: 'Password',
                         onChanged: (value) {},
-                        textInputAction: TextInputAction.next,
+                        textInputAction: TextInputAction.done,
                         textInputType: TextInputType.text,
                         validator: (value) {
                           if (value!.toString().isEmpty) {

@@ -14,6 +14,7 @@ class DeleteTicketCubit extends Cubit<DeleteTicketState> {
     emit(DeleteTicketLoading());
     try {
       var successMessage = await usecase.call(reference);
+      emit(DeleteTicketSuccess());
       return successMessage;
     } on SocketException catch (e) {
       emit(DeleteTicketFailure(errorMessage: e.message));

@@ -1,11 +1,44 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:hebron_pay/constants.dart';
+import 'package:hebron_pay/features/scan/presentation/pages/confirm_ticket_payment.dart';
 import 'package:hebron_pay/size_config.dart';
 
 import '../../../../core/widgets/widgets.dart';
 
-class ScanScreen extends StatelessWidget {
+class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
+
+  @override
+  State<ScanScreen> createState() => _ScanScreenState();
+}
+
+class _ScanScreenState extends State<ScanScreen> {
+  String _scanBarcode = "Unknown";
+
+  /// Function to Scan Image
+  Future<void> scanQR() async {
+    String barcodeScanRes;
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.QR);
+      print(barcodeScanRes);
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get Platform Version.';
+      showErrorSnackBar(context, barcodeScanRes);
+    }
+    if (!mounted) return;
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+    });
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ConfirmTicketScreen(reference: _scanBarcode);
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +83,7 @@ class ScanScreen extends StatelessWidget {
                   horizontal: getProportionateScreenWidth(30)),
               child: GeneralButton(
                 text: 'Scan Code',
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const FailedTransactionScreen();
-                  }));
-                },
+                onPressed: scanQR,
               ),
             )
           ],

@@ -170,10 +170,12 @@ class DeleteReceiptButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.onPressed,
+    this.isLoading = false,
   });
 
   final String? text;
   final Function()? onPressed;
+  final bool? isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -189,13 +191,18 @@ class DeleteReceiptButton extends StatelessWidget {
           padding:
               EdgeInsets.symmetric(vertical: getProportionateScreenHeight(15)),
           child: Center(
-            child: Text(
-              text!,
-              style: const TextStyle(
-                  color: kWhiteColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
+            child: isLoading!
+                ? SpinKitThreeBounce(
+                    color: kWhiteColor,
+                    size: getProportionateScreenWidth(25),
+                  )
+                : Text(
+                    text!,
+                    style: const TextStyle(
+                        color: kWhiteColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
           ),
         ),
       ),

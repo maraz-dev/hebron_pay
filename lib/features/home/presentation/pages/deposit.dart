@@ -47,7 +47,8 @@ class _DepositScreenState extends State<DepositScreen> {
       body: BlocConsumer<FundWalletCubit, FundWalletState>(
         listener: (context, state) {
           if (state is FundWalletSuccess) {
-            print('Success');
+            showSuccessSnackBar(context, "Funds Deposited Successfully");
+            Navigator.pop(context);
           }
           if (state is FundWalletFailure) {
             showErrorSnackBar(context, (state).errorMessage);

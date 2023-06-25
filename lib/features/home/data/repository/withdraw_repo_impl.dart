@@ -33,7 +33,7 @@ class WithdrawRepoImpl implements WithdrawRepo {
         rethrow;
       }
     } else {
-      throw "You're not connecte to the Internet";
+      throw "You're not connected to the Internet";
     }
   }
 

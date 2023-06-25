@@ -50,6 +50,10 @@ const String getPendingTransactionEndpoint =
 const String getTransactionEndpoint =
     "$baseURL/api/Transaction/GetUsersTransactions";
 
+/// Get Transaction Endpoint
+const String getScannedTransactionEndpoint =
+    "$baseURL/api/Transaction/GetTransaction";
+
 /// Get Pending Transactions Endpoint
 const String getSubAccountEndpoint = "$baseURL/api/Transaction/GetSubAccount";
 

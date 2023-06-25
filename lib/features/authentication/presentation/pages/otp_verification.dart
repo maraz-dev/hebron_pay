@@ -4,8 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
 import 'package:hebron_pay/features/authentication/presentation/bloc/email_verification_cubit/email_verification_cubit.dart';
+import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/size_config.dart';
 import 'package:pinput/pinput.dart';
+import 'package:timer_count_down/timer_controller.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class OTPVerification extends StatefulWidget {
   const OTPVerification({super.key, required this.emailAddress});
@@ -20,6 +23,7 @@ class OTPVerification extends StatefulWidget {
 class _OTPVerificationState extends State<OTPVerification> {
   /// A [TextEditingController] for the OTP field
   final TextEditingController _otpController = TextEditingController();
+  final CountdownController _timerController = CountdownController();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
 
@@ -28,8 +32,10 @@ class _OTPVerificationState extends State<OTPVerification> {
   @override
   void initState() {
     super.initState();
+    print(widget.emailAddress);
     BlocProvider.of<EmailVerificationCubit>(context)
         .sendOTP(widget.emailAddress);
+    _timerController.start();
   }
 
   @override
@@ -56,6 +62,7 @@ class _OTPVerificationState extends State<OTPVerification> {
           }
           if (state is EmailVerificationSuccess) {
             showSuccessSnackBar(context, "Your Email has been Verified");
+            Navigator.pushNamed(context, LoginScreen.id);
           }
           if (state is EmailVerificationFailed) {
             showErrorSnackBar(context, (state).errorMessage);
@@ -113,14 +120,19 @@ class _OTPVerificationState extends State<OTPVerification> {
                   ),
                   SizedBox(height: getProportionateScreenHeight(25)),
 
-                  /// Timer
-                  Text(
-                    '00:00',
-                    style: Theme.of(context)
-                        .textTheme
-                        .displaySmall!
-                        .copyWith(color: kErrorColor),
-                  ),
+                  Countdown(
+                      controller: _timerController,
+                      seconds: 60,
+                      interval: const Duration(milliseconds: 100),
+                      build: (_, double time) {
+                        return Text(
+                          "00:${time.toStringAsFixed(0)}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall!
+                              .copyWith(color: kErrorColor),
+                        );
+                      }),
 
                   /// Resend OTP Button
                   Center(
@@ -135,7 +147,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
                         GestureDetector(
-                          onTap: null,
+                          onTap: _resendOtp,
                           child: Text(
                             'Resend Code',
                             style: Theme.of(context)
@@ -166,9 +178,17 @@ class _OTPVerificationState extends State<OTPVerification> {
     );
   }
 
-  void _validateOtp() {
+  void _validateOtp() async {
     if (!_formKey.currentState!.validate()) return;
-    BlocProvider.of<EmailVerificationCubit>(context)
+    FocusScope.of(context).unfocus();
+    await BlocProvider.of<EmailVerificationCubit>(context)
         .validateOtp(widget.emailAddress, _otpController.text);
+  }
+
+  void _resendOtp() async {
+    FocusScope.of(context).unfocus();
+    await BlocProvider.of<EmailVerificationCubit>(context)
+        .sendOTP(widget.emailAddress);
+    _timerController.restart();
   }
 }
