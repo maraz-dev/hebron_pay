@@ -69,10 +69,15 @@ import 'package:hebron_pay/features/profile/data/repositories/change_password_re
 import 'package:hebron_pay/features/profile/domain/repositories/change_password_repo.dart';
 import 'package:hebron_pay/features/profile/domain/usecases/change_password_usecase.dart';
 import 'package:hebron_pay/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:hebron_pay/features/scan/data/datasources/confirm_payment_remote.dart';
 import 'package:hebron_pay/features/scan/data/datasources/get_transaction_remote.dart';
+import 'package:hebron_pay/features/scan/data/repositories/confirm_payment_repo_impl.dart';
 import 'package:hebron_pay/features/scan/data/repositories/get_transaction_repo_impl.dart';
+import 'package:hebron_pay/features/scan/domain/repositories/confirm_payment.dart';
 import 'package:hebron_pay/features/scan/domain/repositories/get_trx_repo.dart';
+import 'package:hebron_pay/features/scan/domain/usecase/confirm_payment.dart';
 import 'package:hebron_pay/features/scan/domain/usecase/get_trx_usecase.dart';
+import 'package:hebron_pay/features/scan/presentation/bloc/confirm_payment_cubit/confirm_payment_cubit.dart';
 import 'package:hebron_pay/features/scan/presentation/bloc/get_scanned_trx_cubit/get_scanned_trx_cubit.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
@@ -110,6 +115,8 @@ Future<void> init() async {
       () => DeleteTicketCubit(usecase: sl.call()));
   sl.registerFactory<GetScannedTrxCubit>(
       () => GetScannedTrxCubit(usecase: sl.call()));
+  sl.registerFactory<ConfirmPaymentCubit>(
+      () => ConfirmPaymentCubit(usecase: sl.call()));
 
   ///Usecases
   sl.registerLazySingleton<LoginUsecase>(
@@ -144,6 +151,8 @@ Future<void> init() async {
   sl.registerLazySingleton<DeleteTicketUsecase>(
       () => DeleteTicketUsecase(repo: sl.call()));
   sl.registerLazySingleton<GetTrxUsecase>(() => GetTrxUsecase(repo: sl.call()));
+  sl.registerLazySingleton<ConfirmPaymentUsecase>(
+      () => ConfirmPaymentUsecase(repo: sl.call()));
 
   ///Repositories
   sl.registerLazySingleton<LoginRepository>(() => LoginRepoImpl(
@@ -174,6 +183,8 @@ Future<void> init() async {
       () => DeleteTicketRepoImpl(networkInfo: sl.call(), remote: sl.call()));
   sl.registerLazySingleton<GetTrxRepo>(
       () => GetTrxRepoImpl(networkInfo: sl.call(), remote: sl.call()));
+  sl.registerLazySingleton<ConfirmPaymentRepo>(
+      () => ConfirmPaymentRepoImpl(networkInfo: sl.call(), remote: sl.call()));
 
   ///Datasources
   sl.registerLazySingleton<LoginRemoteDataSource>(
@@ -200,6 +211,8 @@ Future<void> init() async {
   sl.registerLazySingleton<DeleteTicketRemote>(() => DeleteTicketRemoteImpl());
   sl.registerLazySingleton<GetScannedTransactionRemote>(
       () => GetScannedTransactionRemoteImpl());
+  sl.registerLazySingleton<ConfirmPaymentRemote>(
+      () => ConfirmPaymentRemoteImpl());
 
   ///Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());

@@ -72,3 +72,7 @@ const String resolveAccountDetailsEndpoint =
 
 /// Withdraw from Wallet
 const String withdrawEndpoint = "$baseURL/api/Transaction/WithdrawFromWallet";
+
+/// Confirm Payment
+const String confirmPaymentEndpoint =
+    "$baseURL/api/Transaction/ConfirmTicketPayment";

@@ -28,6 +28,7 @@ import 'package:hebron_pay/features/profile/presentation/pages/change_pin.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/help_and_support.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/privacy_policy.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/terms_and_condition.dart';
+import 'package:hebron_pay/features/scan/presentation/bloc/confirm_payment_cubit/confirm_payment_cubit.dart';
 import 'package:hebron_pay/features/scan/presentation/bloc/get_scanned_trx_cubit/get_scanned_trx_cubit.dart';
 import 'package:hebron_pay/theme.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -73,7 +74,8 @@ class HebronPay extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<BankDetailsCubit>()),
         BlocProvider(create: (_) => di.sl<WithdrawCubit>()),
         BlocProvider(create: (_) => di.sl<DeleteTicketCubit>()),
-        BlocProvider(create: (_) => di.sl<GetScannedTrxCubit>())
+        BlocProvider(create: (_) => di.sl<GetScannedTrxCubit>()),
+        BlocProvider(create: (_) => di.sl<ConfirmPaymentCubit>())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

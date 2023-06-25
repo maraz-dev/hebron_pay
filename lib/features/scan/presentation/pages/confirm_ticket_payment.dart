@@ -7,7 +7,9 @@ import 'package:hebron_pay/core/widgets/ticket_details_properties.dart';
 import 'package:hebron_pay/core/widgets/ticket_divider.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
 import 'package:hebron_pay/features/scan/domain/entities/get_transaction_entity.dart';
+import 'package:hebron_pay/features/scan/presentation/bloc/confirm_payment_cubit/confirm_payment_cubit.dart';
 import 'package:hebron_pay/features/scan/presentation/bloc/get_scanned_trx_cubit/get_scanned_trx_cubit.dart';
+import 'package:hebron_pay/features/scan/presentation/pages/scan.dart';
 import 'package:hebron_pay/size_config.dart';
 
 class ConfirmTicketScreen extends StatefulWidget {
@@ -128,10 +130,32 @@ class _ConfirmTicketScreenState extends State<ConfirmTicketScreen> {
                           ),
                   ),
                   SizedBox(height: getProportionateScreenHeight(30)),
-                  GeneralButton(
-                    text: 'Confirm Payment',
-                    onPressed: () {},
-                    isLoading: _isLoading,
+                  BlocConsumer<ConfirmPaymentCubit, ConfirmPaymentState>(
+                    listener: (context, state) {
+                      if (state is ConfirmPaymentSuccess) {
+                        showSuccessSnackBar(context,
+                            'Payment Confirmed and your Wallet has been Credited');
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const ScanScreen();
+                        }));
+                      }
+                      if (state is ConfirmPaymentFailure) {
+                        showErrorSnackBar(context, (state).errorMessage);
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is ConfirmPaymentLoading) {
+                        _isLoading = true;
+                      } else {
+                        _isLoading = false;
+                      }
+                      return GeneralButton(
+                        text: 'Confirm Payment',
+                        onPressed: _confirmPayment,
+                        isLoading: _isLoading,
+                      );
+                    },
                   )
                 ],
               );
@@ -140,5 +164,23 @@ class _ConfirmTicketScreenState extends State<ConfirmTicketScreen> {
         ),
       ),
     );
+  }
+
+  void _confirmPayment() async {
+    await BlocProvider.of<ConfirmPaymentCubit>(context).confirmPayment({
+      "id": trxDetails!.id,
+      "description": trxDetails!.description,
+      "amount": trxDetails!.amount,
+      "reference": trxDetails!.reference,
+      "type": trxDetails!.type,
+      "date": trxDetails!.date,
+      "time": trxDetails!.time,
+      "hebronPayWalletId": 0,
+      "hebronPayWallet": {
+        "id": 0,
+        "walletBalance": 0,
+        "walletPin": 0,
+      }
+    });
   }
 }
