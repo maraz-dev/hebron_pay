@@ -67,12 +67,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ? Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return OTPVerification(emailAddress: userDetails!.email);
                   }))
-                : Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
+                : Navigator.pushAndRemoveUntil(context,
+                    MaterialPageRoute(builder: (context) {
                     return DashBoard(
                       currentIndex: 0,
                     );
-                  }));
+                  }), (route) => false);
 
             _emailAddressController.clear();
             _passwordController.clear();

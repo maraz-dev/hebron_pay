@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
+import 'package:hebron_pay/core/bloc/cubit/user_details_cubit.dart';
+import 'package:hebron_pay/core/domain/user_entity.dart';
 import 'package:hebron_pay/core/widgets/ticket_details_properties.dart';
 import 'package:hebron_pay/core/widgets/ticket_divider.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';

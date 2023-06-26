@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hebron_pay/core/domain/user_entity.dart';
 import 'package:hebron_pay/core/domain/user_usecases.dart';
 
@@ -32,10 +33,13 @@ class UserDetailsCubit extends Cubit<UserDetailsState> {
   }
 
   Future<HebronPayWalletEntity?> getWalletDetails() async {
+    FlutterSecureStorage storage = const FlutterSecureStorage();
     emit(UserDetailsLoading());
     try {
       var walletDetails = await walletUsecase.call();
       emit(UserDetailsWalletSuccess(walletEntity: walletDetails));
+      await storage.write(
+          key: 'userPin', value: walletDetails.walletPin.toString());
       return walletDetails;
     } on SocketException catch (e) {
       emit(UserDetailsFailure(errorMessage: e.message));

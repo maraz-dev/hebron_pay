@@ -23,7 +23,8 @@ import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/withdraw.dart';
 import 'package:hebron_pay/features/onboarding/presentation/pages/onboarding.dart';
-import 'package:hebron_pay/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:hebron_pay/features/profile/presentation/bloc/change_password_cubit/profile_cubit.dart';
+import 'package:hebron_pay/features/profile/presentation/bloc/change_pin_cubit/change_pin_cubit.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/change_password.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/change_pin.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/help_and_support.dart';
@@ -77,7 +78,8 @@ class HebronPay extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<DeleteTicketCubit>()),
         BlocProvider(create: (_) => di.sl<GetScannedTrxCubit>()),
         BlocProvider(create: (_) => di.sl<ConfirmPaymentCubit>()),
-        BlocProvider(create: (_) => di.sl<UserDetailsCubit>())
+        BlocProvider(create: (_) => di.sl<UserDetailsCubit>()),
+        BlocProvider(create: (_) => di.sl<ChangePinCubit>())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
-import 'package:hebron_pay/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:hebron_pay/features/profile/presentation/bloc/change_password_cubit/profile_cubit.dart';
 import 'package:hebron_pay/size_config.dart';
 
 class ChangePasswordScreen extends StatefulWidget {

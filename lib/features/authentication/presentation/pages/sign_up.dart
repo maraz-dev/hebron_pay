@@ -126,7 +126,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
           icon: SvgPicture.asset(backArrowIcon),
         ),
       ),
-      body: const AuthenticationBackground(),
+      body: WillPopScope(
+          onWillPop: () async {
+            Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (context) {
+              return const LoginScreen();
+            }), (route) => false);
+            return false;
+          },
+          child: const AuthenticationBackground()),
       bottomSheet: BlocConsumer<SignUpCubit, SignUpCubitState>(
         listener: (context, state) {
           if (state is SignUpSuccess) {

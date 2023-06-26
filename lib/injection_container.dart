@@ -70,10 +70,13 @@ import 'package:hebron_pay/features/home/presentation/bloc/set_pin_cubit/set_pin
 import 'package:hebron_pay/features/home/presentation/bloc/transaction_cubit/transaction_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/withdraw_cubit.dart/withdraw_cubit.dart';
 import 'package:hebron_pay/features/profile/data/datasources/change_password_remote.dart';
+import 'package:hebron_pay/features/profile/data/datasources/change_pin_remote.dart';
 import 'package:hebron_pay/features/profile/data/repositories/change_password_repo_impl.dart';
+import 'package:hebron_pay/features/profile/data/repositories/change_pin_repo_impl.dart';
 import 'package:hebron_pay/features/profile/domain/repositories/change_password_repo.dart';
 import 'package:hebron_pay/features/profile/domain/usecases/change_password_usecase.dart';
-import 'package:hebron_pay/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:hebron_pay/features/profile/domain/usecases/change_pin_usecase.dart';
+import 'package:hebron_pay/features/profile/presentation/bloc/change_pin_cubit/change_pin_cubit.dart';
 import 'package:hebron_pay/features/scan/data/datasources/confirm_payment_remote.dart';
 import 'package:hebron_pay/features/scan/data/datasources/get_transaction_remote.dart';
 import 'package:hebron_pay/features/scan/data/repositories/confirm_payment_repo_impl.dart';
@@ -87,6 +90,8 @@ import 'package:hebron_pay/features/scan/presentation/bloc/get_scanned_trx_cubit
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import 'features/authentication/presentation/bloc/login_cubit/login_cubit.dart';
+import 'features/profile/domain/repositories/change_pin_repo.dart';
+import 'features/profile/presentation/bloc/change_password_cubit/profile_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -97,6 +102,7 @@ Future<void> init() async {
       () => SignUpCubit(createAccountUsecase: sl.call()));
   sl.registerFactory<ProfileCubit>(
       () => ProfileCubit(changePasswordUsecase: sl.call()));
+  sl.registerFactory<ChangePinCubit>(() => ChangePinCubit(usecase: sl.call()));
   sl.registerFactory<EmailVerificationCubit>(() => EmailVerificationCubit(
       sendOTPUsecase: sl.call(), validateOTPUsecase: sl.call()));
   sl.registerFactory<FundWalletCubit>(
@@ -136,6 +142,8 @@ Future<void> init() async {
       () => CreateAccountUsecase(createAccountRepo: sl.call()));
   sl.registerLazySingleton<ChangePasswordUsecase>(
       () => ChangePasswordUsecase(repository: sl.call()));
+  sl.registerLazySingleton<ChangePinUsecase>(
+      () => ChangePinUsecase(repo: sl.call()));
   sl.registerLazySingleton<SendOTPUsecase>(
       () => SendOTPUsecase(repo: sl.call()));
   sl.registerLazySingleton<ValidateOTPUsecase>(
@@ -177,6 +185,8 @@ Future<void> init() async {
       CreateAccountRepoImpl(networkInfo: sl.call(), dataSource: sl.call()));
   sl.registerLazySingleton<ChangePasswordRepo>(() => ChangePasswordRepoImpl(
       remoteDatasource: sl.call(), networkInfo: sl.call()));
+  sl.registerLazySingleton<ChangePinRepo>(() =>
+      ChangePinRepoImpl(remoteDatasource: sl.call(), networkInfo: sl.call()));
   sl.registerLazySingleton<OtpVerificationRepo>(() => OtpVerificationRepoImpl(
       emailVerificationRemote: sl.call(), networkInfo: sl.call()));
   sl.registerLazySingleton<FundWalletRepo>(
@@ -211,6 +221,7 @@ Future<void> init() async {
       () => CreateAccountRemoteDataSourceImpl());
   sl.registerLazySingleton<ChangePasswordRemote>(
       () => ChangePasswordRemoteImpl());
+  sl.registerLazySingleton<ChangePinRemote>(() => ChangePinRemoteImpl());
   sl.registerLazySingleton<EmailVerificationRemote>(
       () => EmailVerificationRemoteImpl());
   sl.registerLazySingleton<FundWalletRemoteData>(
