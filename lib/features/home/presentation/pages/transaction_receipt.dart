@@ -127,7 +127,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               ),
             ),
             SizedBox(height: getProportionateScreenHeight(30)),
-            GeneralButton(text: 'Download Receipt', onPressed: () {}),
+            // GeneralButton(text: 'Download Receipt', onPressed: () {}),
             SizedBox(height: getProportionateScreenHeight(10)),
           ],
         ),

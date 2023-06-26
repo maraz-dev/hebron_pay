@@ -69,7 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   }))
                 : Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                    return DashBoard(loggedInUser: userDetails!);
+                    return DashBoard(
+                      currentIndex: 0,
+                    );
                   }));
 
             _emailAddressController.clear();

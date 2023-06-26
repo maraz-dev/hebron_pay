@@ -1,18 +1,18 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
-import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
-import 'package:hebron_pay/features/home/domain/entity/balance_entity.dart';
+import 'package:hebron_pay/core/bloc/cubit/user_details_cubit.dart';
+import 'package:hebron_pay/core/domain/user_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/pending_transaction_entity.dart';
 import 'package:hebron_pay/features/home/domain/entity/transaction_entity.dart';
-import 'package:hebron_pay/features/home/presentation/bloc/balance_cubit/balance_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/get_pending_transactions_cubit/pending_transactions_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/set_pin_cubit/set_pin_cubit.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/transaction_cubit/transaction_cubit.dart';
+import 'package:hebron_pay/features/home/presentation/pages/all_transactions.dart';
 import 'package:hebron_pay/features/home/presentation/pages/deposit.dart';
 import 'package:hebron_pay/features/home/presentation/pages/generate_ticket.dart';
 import 'package:hebron_pay/features/home/presentation/pages/pending_transaction_receipt.dart';
@@ -26,17 +26,19 @@ import '../bloc/generate_eod_cubit/generate_eod_cubit.dart';
 import '../widgets/pending_transaction_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.loggedInUser});
-  final LoginEntity loggedInUser;
+  const HomeScreen({
+    super.key,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  BalanceEntity? balanceDetails;
-  List<PendingTransactionEntity>? pendingTransaction;
-  List<TransactionEntity>? transaction;
+  UserEntity? currentUserEntity;
+  HebronPayWalletEntity? balanceDetails;
+  List<PendingTransactionEntity>? pendingTransaction = [];
+  List<TransactionEntity>? transaction = [];
   String? errorText;
 
   /// Set PIN Controller
@@ -47,9 +49,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<FormState> _formkey = GlobalKey();
   final GlobalKey<FormState> _pinFormkey = GlobalKey();
 
+  /// Get User Details
+  void _getCurrentUser() async {
+    var currentUser =
+        await BlocProvider.of<UserDetailsCubit>(context).userUsecase();
+    currentUserEntity = currentUser;
+  }
+
   /// Show Balance
   void _showBalance() async {
-    var balance = await BlocProvider.of<BalanceCubit>(context).showBalance();
+    var balance =
+        await BlocProvider.of<UserDetailsCubit>(context).getWalletDetails();
     balanceDetails = balance;
   }
 
@@ -57,33 +67,23 @@ class _HomeScreenState extends State<HomeScreen> {
   void _getPendingTransaction() async {
     var res = await BlocProvider.of<PendingTransactionsCubit>(context)
         .getPendingTransactions();
-    pendingTransaction = res;
+    pendingTransaction = res!;
   }
 
   /// Get Transactions
   void _getTransaction() async {
     var res =
         await BlocProvider.of<TransactionCubit>(context).getTransactions();
-    transaction = res;
+    transaction = res!;
   }
 
   bool _isLoading = false;
-
-  Future<void> _refreshData() async {
-    // Perform your initialization tasks here
-    await Future.delayed(
-        Duration(seconds: 1)); // Simulating some asynchronous task
-    setState(() {
-      // Update the UI with the refreshed data
-      _showBalance();
-      _getPendingTransaction();
-      _getTransaction();
-    });
-  }
+  bool _showBalanceFigure = false;
 
   @override
   void initState() {
     super.initState();
+    _getCurrentUser();
     _showBalance();
     _getPendingTransaction();
     _getTransaction();
@@ -95,9 +95,30 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         centerTitle: false,
         automaticallyImplyLeading: false,
-        title: Text(
-          'Welcome, ${widget.loggedInUser.firstName}',
-          style: Theme.of(context).textTheme.displaySmall,
+        title: BlocConsumer<UserDetailsCubit, UserDetailsState>(
+          listener: (context, state) {
+            if (state is UserDetailsFailure) {
+              showErrorSnackBar(context, (state).errorMessage);
+            }
+          },
+          builder: (context, state) {
+            if (state is UserDetailsLoading) {
+              _isLoading = true;
+            } else {
+              _isLoading = false;
+            }
+            if (state is UserDetailsSuccess) {
+              currentUserEntity = (state).userEntity;
+            }
+            return _isLoading
+                ? Container()
+                : currentUserEntity == null
+                    ? Container()
+                    : Text(
+                        'Welcome, ${currentUserEntity!.firstName}',
+                        style: Theme.of(context).textTheme.displaySmall,
+                      );
+          },
         ),
         actions: [
           Padding(
@@ -113,20 +134,20 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.symmetric(
             horizontal: getProportionateScreenWidth(20),
             vertical: getProportionateScreenHeight(10)),
-        child: BlocConsumer<BalanceCubit, BalanceState>(
+        child: BlocConsumer<UserDetailsCubit, UserDetailsState>(
           listener: (context, state) {
-            if (state is BalanceFailure) {
+            if (state is UserDetailsFailure) {
               showErrorSnackBar(context, (state).errorMessage);
             }
           },
           builder: (context, state) {
-            if (state is BalanceLoading) {
+            if (state is UserDetailsLoading) {
               _isLoading = true;
             } else {
               _isLoading = false;
             }
-            if (state is BalanceSuccess) {
-              balanceDetails = (state).walletDetails;
+            if (state is UserDetailsWalletSuccess) {
+              balanceDetails = (state).walletEntity;
               if (balanceDetails!.walletPin == 0) {
                 print('Balance PIN has not been Set');
 
@@ -138,362 +159,289 @@ class _HomeScreenState extends State<HomeScreen> {
                 print('Balance PIN has been set');
               }
             }
-            return Column(
-              children: [
-                /// Balance, Withdraw and Deposit Box
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: getProportionateScreenWidth(20),
-                      vertical: getProportionateScreenHeight(20)),
-                  decoration: BoxDecoration(
-                      color: kPrimaryColor,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: _isLoading || balanceDetails == null
-                      ? SpinKitWave(
-                          color: kWhiteColor,
-                          size: getProportionateScreenWidth(25),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Total Balance',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: kWhiteColor),
+            return RefreshIndicator(
+              onRefresh: () async {
+                await Future.delayed(const Duration(seconds: 1));
+                _getCurrentUser();
+                _showBalance();
+                _getPendingTransaction();
+                _getTransaction();
+              },
+              child: ListView(
+                children: [
+                  /// Balance, Withdraw and Deposit Box
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: getProportionateScreenWidth(20),
+                        vertical: getProportionateScreenHeight(20)),
+                    decoration: BoxDecoration(
+                        color: kPrimaryColor,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: _isLoading || balanceDetails == null
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: getProportionateScreenHeight(50)),
+                            child: SpinKitSquareCircle(
+                              color: kWhiteColor,
+                              size: getProportionateScreenWidth(25),
                             ),
-                            SizedBox(height: getProportionateScreenHeight(10)),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  nairaAmount(
-                                      balanceDetails!.walletBalance.toDouble()),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displayLarge!
-                                      .copyWith(color: kWhiteColor),
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: SvgPicture.asset(
-                                    eyeSlashIcon,
-                                    color: kWhiteColor,
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: getProportionateScreenHeight(16)),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TransactionButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, DepositScreen.id);
-                                    },
-                                    text: 'Deposit',
-                                  ),
-                                ),
-                                SizedBox(
-                                    width: getProportionateScreenWidth(20)),
-                                Expanded(
-                                  child: TransactionButton(
-                                    text: 'Withdraw',
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, WithdrawScreen.id);
-                                    },
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                ),
-                SizedBox(height: getProportionateScreenHeight(16)),
-
-                /// Ticket and EOD Button
-                SizedBox(height: getProportionateScreenHeight(10)),
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, GenerateTicket.id);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: getProportionateScreenWidth(10),
-                              vertical: getProportionateScreenHeight(5)),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: kPrimaryColor,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SvgPicture.asset(ticketIcon),
                               Text(
-                                'Generate \nTicket',
+                                'Total Balance',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
-                                    .copyWith(
-                                        color: kPrimaryColor,
-                                        fontWeight: FontWeight.bold),
+                                    .copyWith(color: kWhiteColor),
                               ),
-                              SvgPicture.asset(
-                                arrowRightIcon,
+                              SizedBox(
+                                  height: getProportionateScreenHeight(10)),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    balanceDetails == null
+                                        ? nairaAmount(0)
+                                        : _showBalanceFigure
+                                            ? '*****'
+                                            : nairaAmount(balanceDetails!
+                                                .walletBalance
+                                                .toDouble()),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge!
+                                        .copyWith(color: kWhiteColor),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      if (_showBalanceFigure == true) {
+                                        setState(() {
+                                          _showBalanceFigure = false;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          _showBalanceFigure = true;
+                                        });
+                                      }
+                                    },
+                                    child: SvgPicture.asset(
+                                      _showBalanceFigure
+                                          ? eyeIcon
+                                          : eyeSlashIcon,
+                                      color: kWhiteColor,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                  height: getProportionateScreenHeight(16)),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TransactionButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, DepositScreen.id);
+                                      },
+                                      text: 'Deposit',
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      width: getProportionateScreenWidth(20)),
+                                  Expanded(
+                                    child: TransactionButton(
+                                      text: 'Withdraw',
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, WithdrawScreen.id);
+                                      },
+                                    ),
+                                  )
+                                ],
                               )
                             ],
                           ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: getProportionateScreenWidth(15)),
-                    BlocConsumer<GenerateEodCubit, GenerateEodState>(
-                      listener: (context, state) {
-                        if (state is GenerateEodSuccess) {
-                          showSuccessSnackBar(context,
-                              'Your End-of-Day has been Successfully sent to your Mail');
-                        }
-                        if (state is GenerateEodFailure) {
-                          showErrorSnackBar(context, (state).errorMessage);
-                        }
-                      },
-                      builder: (context, state) {
-                        if (state is GenerateEodLoading) {
-                          _isLoading = true;
-                        } else {
-                          _isLoading = false;
-                        }
-                        return Expanded(
-                          child: GestureDetector(
-                            onTap: () async {
-                              await BlocProvider.of<GenerateEodCubit>(context)
-                                  .generateEod();
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: getProportionateScreenWidth(10),
-                                  vertical: getProportionateScreenHeight(5)),
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: kPrimaryColor,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: _isLoading
-                                  ? SpinKitDancingSquare(
-                                      color: kPrimaryColor,
-                                      size: getProportionateScreenWidth(50),
-                                    )
-                                  : Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SvgPicture.asset(eodIcon),
-                                        Text(
-                                          'Generate \nE O D',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                  color: kPrimaryColor,
-                                                  fontWeight: FontWeight.bold),
-                                        ),
-                                        SvgPicture.asset(
-                                          arrowRightIcon,
-                                        )
-                                      ],
-                                    ),
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(16)),
+
+                  /// Ticket and EOD Button
+                  SizedBox(height: getProportionateScreenHeight(10)),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, GenerateTicket.id);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: getProportionateScreenWidth(10),
+                                vertical: getProportionateScreenHeight(5)),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: kPrimaryColor,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SvgPicture.asset(ticketIcon),
+                                Text(
+                                  'Generate \nTicket',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: kPrimaryColor,
+                                          fontWeight: FontWeight.bold),
+                                ),
+                                SvgPicture.asset(
+                                  arrowRightIcon,
+                                )
+                              ],
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(height: getProportionateScreenHeight(15)),
-
-                        /// Pending Payments
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Pending Transactions',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall!
-                                  .copyWith(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400),
-                            ),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Text(
-                                'See all',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(
-                                        fontSize: 16,
-                                        decoration: TextDecoration.underline,
-                                        fontWeight: FontWeight.w400,
-                                        color: kDarkGrey),
-                              ),
-                            )
-                          ],
                         ),
-                        SizedBox(height: getProportionateScreenHeight(10)),
-                        BlocConsumer<PendingTransactionsCubit,
-                            PendingTransactionsState>(
-                          listener: (context, state) {
-                            if (state is PendingTransactionsFailure) {
-                              showErrorSnackBar(context, (state).errorMessage);
-                            }
-                          },
-                          builder: (context, state) {
-                            if (state is PendingTransactionsLoading) {
-                              _isLoading = true;
-                            } else {
-                              _isLoading = false;
-                            }
-                            if (state is PendingTransactionsSuccess) {
-                              pendingTransaction = (state).pendingTrx;
-                            }
-                            return _isLoading
-                                ? SpinKitWave(
-                                    color: kPrimaryColor,
-                                    size: getProportionateScreenWidth(25),
-                                  )
-                                : pendingTransaction!.isEmpty ||
-                                        pendingTransaction == null
-                                    ? Center(
-                                        child: Column(
+                      ),
+                      SizedBox(width: getProportionateScreenWidth(15)),
+                      BlocConsumer<GenerateEodCubit, GenerateEodState>(
+                        listener: (context, state) {
+                          if (state is GenerateEodSuccess) {
+                            showSuccessSnackBar(context,
+                                'Your End-of-Day has been Successfully sent to your Mail');
+                          }
+                          if (state is GenerateEodFailure) {
+                            showErrorSnackBar(context, (state).errorMessage);
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is GenerateEodLoading) {
+                            _isLoading = true;
+                          } else {
+                            _isLoading = false;
+                          }
+                          return Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                await BlocProvider.of<GenerateEodCubit>(context)
+                                    .generateEod();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: getProportionateScreenWidth(10),
+                                    vertical: getProportionateScreenHeight(5)),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: kPrimaryColor,
+                                      width: 2,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: _isLoading
+                                    ? SpinKitDancingSquare(
+                                        color: kPrimaryColor,
+                                        size: getProportionateScreenWidth(50),
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
+                                          SvgPicture.asset(eodIcon),
                                           Text(
-                                            "You don't have any Pending Transactions yet...",
+                                            'Generate \nE O D',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium!
-                                                .copyWith(color: kLightGrey),
+                                                .copyWith(
+                                                    color: kPrimaryColor,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                           ),
-                                          SizedBox(
-                                            height:
-                                                getProportionateScreenHeight(
-                                                    10),
+                                          SvgPicture.asset(
+                                            arrowRightIcon,
                                           )
                                         ],
-                                      ))
-                                    : ListView.builder(
-                                        physics: const ScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount:
-                                            pendingTransaction!.length < 2
-                                                ? pendingTransaction!.length
-                                                : 2,
-                                        itemBuilder: (context, pendingIndex) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              _showPinBottomSheet(
-                                                  context, pendingIndex);
-                                            },
-                                            child: Column(
-                                              children: [
-                                                PendingTransactionCard(
-                                                  ticketDescription:
-                                                      pendingTransaction![
-                                                              pendingIndex]
-                                                          .description,
-                                                  ticketAmount: nairaAmount(
-                                                      pendingTransaction![
-                                                              pendingIndex]
-                                                          .amount
-                                                          .toDouble()),
-                                                  timeCreated:
-                                                      pendingTransaction![
-                                                              pendingIndex]
-                                                          .time,
-                                                  dateCreated:
-                                                      pendingTransaction![
-                                                              pendingIndex]
-                                                          .date,
-                                                ),
-                                                SizedBox(
-                                                    height:
-                                                        getProportionateScreenHeight(
-                                                            10)),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      );
-                          },
-                        ),
-
-                        /// Recent Transactions
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Recent Transactions',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall!
-                                  .copyWith(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400),
+                                      ),
+                              ),
                             ),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Text(
-                                'See all',
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: getProportionateScreenHeight(15)),
+
+                          /// Pending Payments
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Pending Transactions',
                                 style: Theme.of(context)
                                     .textTheme
                                     .displaySmall!
                                     .copyWith(
                                         fontSize: 16,
-                                        decoration: TextDecoration.underline,
-                                        fontWeight: FontWeight.w400,
-                                        color: kDarkGrey),
+                                        fontWeight: FontWeight.w400),
                               ),
-                            )
-                          ],
-                        ),
-                        SizedBox(height: getProportionateScreenHeight(10)),
-                        BlocConsumer<TransactionCubit, TransactionState>(
-                          listener: (context, state) {
-                            if (state is TransactionFailure) {
-                              showErrorSnackBar(context, (state).errorMessage);
-                            }
-                          },
-                          builder: (context, state) {
-                            if (state is TransactionLoading) {
-                              _isLoading = true;
-                            } else {
-                              _isLoading = false;
-                            }
-                            if (state is TransactionSuccess) {
-                              transaction = (state).userTrx;
-                            }
-                            return _isLoading
-                                ? SpinKitWave(
-                                    color: kPrimaryColor,
-                                    size: getProportionateScreenWidth(25))
-                                : transaction!.isEmpty || transaction == null
-                                    ? Center(
-                                        child: Column(
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return const AllTransactionsScreen(
+                                        isPendingTrx: true);
+                                  }));
+                                },
+                                child: Text(
+                                  'See all',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall!
+                                      .copyWith(
+                                          fontSize: 16,
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.w400,
+                                          color: kDarkGrey),
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: getProportionateScreenHeight(10)),
+                          BlocConsumer<PendingTransactionsCubit,
+                              PendingTransactionsState>(
+                            listener: (context, state) {
+                              if (state is PendingTransactionsFailure) {
+                                showErrorSnackBar(
+                                    context, (state).errorMessage);
+                              }
+                            },
+                            builder: (context, state) {
+                              if (state is PendingTransactionsLoading) {
+                                _isLoading = true;
+                              } else {
+                                _isLoading = false;
+                              }
+                              if (state is PendingTransactionsSuccess) {
+                                pendingTransaction = (state).pendingTrx;
+                              }
+                              return _isLoading
+                                  ? SpinKitWave(
+                                      color: kPrimaryColor,
+                                      size: getProportionateScreenWidth(25),
+                                    )
+                                  : pendingTransaction!.isEmpty ||
+                                          pendingTransaction == null
+                                      ? Center(
+                                          child: Column(
                                           children: [
                                             Text(
                                               "You don't have any Pending Transactions yet...",
@@ -508,66 +456,190 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       10),
                                             )
                                           ],
-                                        ),
-                                      )
-                                    : SizedBox(
-                                        height:
-                                            getProportionateScreenHeight(315),
-                                        child: ListView.builder(
-                                            physics: const ScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: transaction!.length < 3
-                                                ? transaction!.length
-                                                : 3,
-                                            itemBuilder: (context, index) {
-                                              return GestureDetector(
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (context) {
-                                                    return TransactionReceipt(
-                                                        position: index);
-                                                  }));
-                                                },
-                                                child: Column(
-                                                  children: [
-                                                    TransactionCard(
-                                                      ticketDescription:
-                                                          transaction![index]
-                                                              .description,
-                                                      ticketAmount: nairaAmount(
-                                                          transaction![index]
-                                                              .amount
-                                                              .toDouble()),
-                                                      isDebit:
-                                                          transaction![index]
-                                                                      .type ==
-                                                                  'debit'
-                                                              ? true
-                                                              : false,
-                                                      timeCreated:
-                                                          transaction![index]
-                                                              .time,
-                                                      dateCreated:
-                                                          transaction![index]
-                                                              .date,
-                                                    ),
-                                                    SizedBox(
-                                                        height:
-                                                            getProportionateScreenHeight(
-                                                                10))
-                                                  ],
-                                                ),
-                                              );
-                                            }),
-                                      );
-                          },
-                        )
-                      ],
+                                        ))
+                                      : ListView.builder(
+                                          physics: const ScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount:
+                                              pendingTransaction!.length < 2
+                                                  ? pendingTransaction!.length
+                                                  : 2,
+                                          itemBuilder: (context, pendingIndex) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                _showPinBottomSheet(
+                                                    context, pendingIndex);
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  PendingTransactionCard(
+                                                    ticketDescription:
+                                                        pendingTransaction![
+                                                                pendingIndex]
+                                                            .description,
+                                                    ticketAmount: nairaAmount(
+                                                        pendingTransaction![
+                                                                pendingIndex]
+                                                            .amount
+                                                            .toDouble()),
+                                                    timeCreated:
+                                                        pendingTransaction![
+                                                                pendingIndex]
+                                                            .time,
+                                                    dateCreated:
+                                                        pendingTransaction![
+                                                                pendingIndex]
+                                                            .date,
+                                                  ),
+                                                  SizedBox(
+                                                      height:
+                                                          getProportionateScreenHeight(
+                                                              10)),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        );
+                            },
+                          ),
+
+                          /// Recent Transactions
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Recent Transactions',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return const AllTransactionsScreen(
+                                        isPendingTrx: false);
+                                  }));
+                                },
+                                child: Text(
+                                  'See all',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall!
+                                      .copyWith(
+                                          fontSize: 16,
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.w400,
+                                          color: kDarkGrey),
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: getProportionateScreenHeight(10)),
+                          BlocConsumer<TransactionCubit, TransactionState>(
+                            listener: (context, state) {
+                              if (state is TransactionFailure) {
+                                showErrorSnackBar(
+                                    context, (state).errorMessage);
+                              }
+                            },
+                            builder: (context, state) {
+                              if (state is TransactionLoading) {
+                                _isLoading = true;
+                              } else {
+                                _isLoading = false;
+                              }
+                              if (state is TransactionSuccess) {
+                                transaction = (state).userTrx;
+                              }
+                              return _isLoading
+                                  ? SpinKitWave(
+                                      color: kPrimaryColor,
+                                      size: getProportionateScreenWidth(25))
+                                  : transaction!.isEmpty || transaction == null
+                                      ? Center(
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "You don't have any Pending Transactions yet...",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .copyWith(
+                                                        color: kLightGrey),
+                                              ),
+                                              SizedBox(
+                                                height:
+                                                    getProportionateScreenHeight(
+                                                        10),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          height:
+                                              getProportionateScreenHeight(315),
+                                          child: ListView.builder(
+                                              physics: const ScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemCount: transaction!.length < 3
+                                                  ? transaction!.length
+                                                  : 3,
+                                              itemBuilder: (context, index) {
+                                                return GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return TransactionReceipt(
+                                                          position: index);
+                                                    }));
+                                                  },
+                                                  child: Column(
+                                                    children: [
+                                                      TransactionCard(
+                                                        ticketDescription:
+                                                            transaction![index]
+                                                                .description,
+                                                        ticketAmount:
+                                                            nairaAmount(
+                                                                transaction![
+                                                                        index]
+                                                                    .amount
+                                                                    .toDouble()),
+                                                        isDebit:
+                                                            transaction![index]
+                                                                        .type ==
+                                                                    'debit'
+                                                                ? true
+                                                                : false,
+                                                        timeCreated:
+                                                            transaction![index]
+                                                                .time,
+                                                        dateCreated:
+                                                            transaction![index]
+                                                                .date,
+                                                      ),
+                                                      SizedBox(
+                                                          height:
+                                                              getProportionateScreenHeight(
+                                                                  10))
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                        );
+                            },
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             );
           },
         ),

@@ -6,6 +6,7 @@ import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/ticket_details_properties.dart';
 import 'package:hebron_pay/core/widgets/ticket_divider.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
+import 'package:hebron_pay/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:hebron_pay/features/scan/domain/entities/get_transaction_entity.dart';
 import 'package:hebron_pay/features/scan/presentation/bloc/confirm_payment_cubit/confirm_payment_cubit.dart';
 import 'package:hebron_pay/features/scan/presentation/bloc/get_scanned_trx_cubit/get_scanned_trx_cubit.dart';
@@ -96,38 +97,55 @@ class _ConfirmTicketScreenState extends State<ConfirmTicketScreen> {
                               size: getProportionateScreenWidth(50),
                             ),
                           )
-                        : Column(
-                            children: [
-                              TicketDetailsProps(
-                                propertyName: 'Username',
-                                isImportant: true,
-                                value: trxDetails!.username,
+                        : trxDetails == null
+                            ? Center(
+                                child: Column(
+                                children: [
+                                  Text(
+                                    "Unable to get Transaction at this moment \n Check your Internet Connection or Scan again...",
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(color: kBlackColor),
+                                  ),
+                                  SizedBox(
+                                    height: getProportionateScreenHeight(10),
+                                  )
+                                ],
+                              ))
+                            : Column(
+                                children: [
+                                  TicketDetailsProps(
+                                    propertyName: "Sender's Name",
+                                    isImportant: true,
+                                    value: trxDetails!.username,
+                                  ),
+                                  const TicketDivider(),
+                                  TicketDetailsProps(
+                                    propertyName: 'Narration',
+                                    value: trxDetails!.description,
+                                  ),
+                                  const TicketDivider(),
+                                  TicketDetailsProps(
+                                    propertyName: 'Amount',
+                                    isImportant: true,
+                                    value: nairaAmount(
+                                        trxDetails!.amount.toDouble()),
+                                  ),
+                                  const TicketDivider(),
+                                  TicketDetailsProps(
+                                    propertyName: 'Reference',
+                                    value: trxDetails!.reference,
+                                  ),
+                                  const TicketDivider(),
+                                  TicketDetailsProps(
+                                    propertyName: 'Date/Time',
+                                    value:
+                                        '${trxDetails!.date} / ${trxDetails!.time}',
+                                  ),
+                                ],
                               ),
-                              const TicketDivider(),
-                              TicketDetailsProps(
-                                propertyName: 'Narration',
-                                value: trxDetails!.description,
-                              ),
-                              const TicketDivider(),
-                              TicketDetailsProps(
-                                propertyName: 'Amount',
-                                isImportant: true,
-                                value:
-                                    nairaAmount(trxDetails!.amount.toDouble()),
-                              ),
-                              const TicketDivider(),
-                              TicketDetailsProps(
-                                propertyName: 'Reference',
-                                value: trxDetails!.reference,
-                              ),
-                              const TicketDivider(),
-                              TicketDetailsProps(
-                                propertyName: 'Date/Time',
-                                value:
-                                    '${trxDetails!.date} / ${trxDetails!.time}',
-                              ),
-                            ],
-                          ),
                   ),
                   SizedBox(height: getProportionateScreenHeight(30)),
                   BlocConsumer<ConfirmPaymentCubit, ConfirmPaymentState>(
@@ -137,7 +155,9 @@ class _ConfirmTicketScreenState extends State<ConfirmTicketScreen> {
                             'Payment Confirmed and your Wallet has been Credited');
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return const ScanScreen();
+                          return DashBoard(
+                            currentIndex: 1,
+                          );
                         }));
                       }
                       if (state is ConfirmPaymentFailure) {
@@ -175,7 +195,7 @@ class _ConfirmTicketScreenState extends State<ConfirmTicketScreen> {
       "type": trxDetails!.type,
       "date": trxDetails!.date,
       "time": trxDetails!.time,
-      "hebronPayWalletId": 0,
+      "hebronPayWalletId": trxDetails!.id,
       "hebronPayWallet": {
         "id": 0,
         "walletBalance": 0,

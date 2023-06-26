@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hebron_pay/core/bloc/cubit/user_details_cubit.dart';
 import 'package:hebron_pay/features/authentication/presentation/bloc/email_verification_cubit/email_verification_cubit.dart';
 import 'package:hebron_pay/features/authentication/presentation/bloc/login_cubit/login_cubit.dart';
 import 'package:hebron_pay/features/authentication/presentation/bloc/sign_in_cubit/sign_up_cubit_cubit.dart';
@@ -75,7 +76,8 @@ class HebronPay extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<WithdrawCubit>()),
         BlocProvider(create: (_) => di.sl<DeleteTicketCubit>()),
         BlocProvider(create: (_) => di.sl<GetScannedTrxCubit>()),
-        BlocProvider(create: (_) => di.sl<ConfirmPaymentCubit>())
+        BlocProvider(create: (_) => di.sl<ConfirmPaymentCubit>()),
+        BlocProvider(create: (_) => di.sl<UserDetailsCubit>())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

@@ -35,7 +35,6 @@ class _OTPVerificationState extends State<OTPVerification> {
     print(widget.emailAddress);
     BlocProvider.of<EmailVerificationCubit>(context)
         .sendOTP(widget.emailAddress);
-    _timerController.start();
   }
 
   @override
@@ -59,6 +58,7 @@ class _OTPVerificationState extends State<OTPVerification> {
         listener: (context, state) {
           if (state is EmailVerificationSent) {
             showSuccessSnackBar(context, "OTP has been Sent");
+            _timerController.restart();
           }
           if (state is EmailVerificationSuccess) {
             showSuccessSnackBar(context, "Your Email has been Verified");

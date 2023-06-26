@@ -47,11 +47,11 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
   String? errorText;
 
   /// A [List] of all the available Banks
-  List<BankEntity>? _availableBanks;
+  List<BankEntity>? _availableBanks = [];
 
   void _getBanks() async {
     var bankRes = await BlocProvider.of<GetBankCubit>(context).getBanks();
-    _availableBanks = bankRes;
+    _availableBanks = bankRes!;
   }
 
   /// A varirable to hold the User's selected Bank
@@ -156,34 +156,52 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                       return _isLoading
                           ? const SpinKitPouringHourGlassRefined(
                               color: kPrimaryColor)
-                          : DropdownButtonFormField(
-                              isExpanded: true,
-                              value: _selectedBank,
-                              hint: Text(
-                                'Select Bank',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: kLightPurple),
-                              ),
-                              items: _availableBanks!.map((items) {
-                                return DropdownMenuItem(
-                                  value: items,
-                                  child: Text(items.name),
+                          : _availableBanks!.isEmpty || _availableBanks == null
+                              ? Center(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "No Banks Available Yet...",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(color: kLightGrey),
+                                      ),
+                                      SizedBox(
+                                        height:
+                                            getProportionateScreenHeight(10),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : DropdownButtonFormField(
+                                  isExpanded: true,
+                                  value: _selectedBank,
+                                  hint: Text(
+                                    'Select Bank',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(color: kLightPurple),
+                                  ),
+                                  items: _availableBanks!.map((items) {
+                                    return DropdownMenuItem(
+                                      value: items,
+                                      child: Text(items.name),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedBank = value;
+                                    });
+                                  },
+                                  validator: (value) {
+                                    if (value.toString().isEmpty) {
+                                      return "Bank Name can't be Empty";
+                                    }
+                                    return null;
+                                  },
                                 );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedBank = value;
-                                });
-                              },
-                              validator: (value) {
-                                if (value.toString().isEmpty) {
-                                  return "Bank Name can't be Empty";
-                                }
-                                return null;
-                              },
-                            );
                     },
                   ),
                   SizedBox(height: getProportionateScreenHeight(10)),

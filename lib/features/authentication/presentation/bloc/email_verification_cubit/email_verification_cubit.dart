@@ -30,10 +30,9 @@ class EmailVerificationCubit extends Cubit<EmailVerificationState> {
   Future<String?> validateOtp(String email, String inputPin) async {
     emit(EmailVerificationLoading());
     try {
-      var successMessage =
-          await validateOTPUsecase.call(email, inputPin) as String;
+      var successMessage = await validateOTPUsecase.call(email, inputPin);
       emit(EmailVerificationSuccess());
-      return successMessage;
+      return successMessage.toString();
     } on SocketException catch (e) {
       emit(EmailVerificationFailed(errorMessage: e.message));
     } catch (e) {

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/widgets/widgets.dart';
+import 'package:hebron_pay/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:hebron_pay/features/home/presentation/bloc/generate_ticket_cubit/generate_ticket_cubit.dart';
 import 'package:hebron_pay/size_config.dart';
 
@@ -48,7 +49,11 @@ class _GenerateTicketState extends State<GenerateTicket> {
         listener: (context, state) {
           if (state is GenerateTicketSuccess) {
             showSuccessSnackBar(context, 'Ticket Successfully Created');
-            Navigator.pop(context);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return DashBoard(
+                currentIndex: 0,
+              );
+            }));
           }
           if (state is GenerateTicketFailure) {
             showErrorSnackBar(context, (state).errorMessage);
@@ -89,7 +94,7 @@ class _GenerateTicketState extends State<GenerateTicket> {
                   HpTextFormField(
                       controller: _amountController,
                       hintText: 'E.g. 2000',
-                      title: 'Amount',
+                      title: 'Amount (Include Pack if Needed)',
                       onChanged: (value) {},
                       textInputAction: TextInputAction.next,
                       textInputType: TextInputType.number,

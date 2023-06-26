@@ -34,7 +34,7 @@ class OtpVerificationRepoImpl implements OtpVerificationRepo {
   }
 
   @override
-  Future<ResponseEntity> validateOTP(String email, String inputPin) async {
+  Future<String> validateOTP(String email, String inputPin) async {
     if (await networkInfo.isConnected) {
       try {
         var response =

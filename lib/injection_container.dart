@@ -1,5 +1,10 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hebron_pay/core/bloc/cubit/user_details_cubit.dart';
+import 'package:hebron_pay/core/data/user_remote.dart';
+import 'package:hebron_pay/core/data/user_repo_impl.dart';
+import 'package:hebron_pay/core/domain/user_repository.dart';
+import 'package:hebron_pay/core/domain/user_usecases.dart';
 import 'package:hebron_pay/core/network/network_info.dart';
 import 'package:hebron_pay/features/authentication/data/datasources/create_account_remote.dart';
 import 'package:hebron_pay/features/authentication/data/datasources/email_verification_remote.dart';
@@ -117,6 +122,10 @@ Future<void> init() async {
       () => GetScannedTrxCubit(usecase: sl.call()));
   sl.registerFactory<ConfirmPaymentCubit>(
       () => ConfirmPaymentCubit(usecase: sl.call()));
+  sl.registerFactory<UserDetailsCubit>(() => UserDetailsCubit(
+      userUsecase: sl.call(),
+      walletUsecase: sl.call(),
+      subAccountUsecase: sl.call()));
 
   ///Usecases
   sl.registerLazySingleton<LoginUsecase>(
@@ -153,6 +162,11 @@ Future<void> init() async {
   sl.registerLazySingleton<GetTrxUsecase>(() => GetTrxUsecase(repo: sl.call()));
   sl.registerLazySingleton<ConfirmPaymentUsecase>(
       () => ConfirmPaymentUsecase(repo: sl.call()));
+  sl.registerLazySingleton<UserUsecase>(() => UserUsecase(userRepo: sl.call()));
+  sl.registerLazySingleton<HebronPayWalletUsecase>(
+      () => HebronPayWalletUsecase(userRepo: sl.call()));
+  sl.registerLazySingleton<SubAccountUsecase>(
+      () => SubAccountUsecase(userRepo: sl.call()));
 
   ///Repositories
   sl.registerLazySingleton<LoginRepository>(() => LoginRepoImpl(
@@ -185,6 +199,8 @@ Future<void> init() async {
       () => GetTrxRepoImpl(networkInfo: sl.call(), remote: sl.call()));
   sl.registerLazySingleton<ConfirmPaymentRepo>(
       () => ConfirmPaymentRepoImpl(networkInfo: sl.call(), remote: sl.call()));
+  sl.registerLazySingleton<UserRepo>(
+      () => UserRepoImpl(remote: sl.call(), networkInfo: sl.call()));
 
   ///Datasources
   sl.registerLazySingleton<LoginRemoteDataSource>(
@@ -213,6 +229,7 @@ Future<void> init() async {
       () => GetScannedTransactionRemoteImpl());
   sl.registerLazySingleton<ConfirmPaymentRemote>(
       () => ConfirmPaymentRemoteImpl());
+  sl.registerLazySingleton<UserRemote>(() => UserRemoteImpl());
 
   ///Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());

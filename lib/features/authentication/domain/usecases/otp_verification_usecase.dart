@@ -17,7 +17,7 @@ class ValidateOTPUsecase {
 
   ValidateOTPUsecase({required this.repo});
 
-  Future<ResponseEntity> call(String email, String inputPin) async {
+  Future<String> call(String email, String inputPin) async {
     return await repo.validateOTP(email, inputPin);
   }
 }

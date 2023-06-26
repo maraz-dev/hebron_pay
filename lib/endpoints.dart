@@ -31,6 +31,10 @@ const String changePasswordEndpoint =
 const String getSubAccountBalanceEndpoint =
     "$baseURL/api/Authentication/GetSubAccountBalance";
 
+/// Get User Details
+const String getUserDetailsEndpoint =
+    "$baseURL/api/Authentication/GetUserDetails";
+
 /// TRANSACTION ENDPOINTS
 /// Generate Ticket Endpoint
 const String generateTicketEndpoint = "$baseURL/api/Transaction/GenerateTicket";
