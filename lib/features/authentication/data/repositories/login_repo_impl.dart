@@ -38,7 +38,8 @@ class LoginRepoImpl implements LoginRepository {
           throw (res.error['message']);
         } else {
           print(res.message);
-          await secureStorage.write(key: 'userToken', value: res.data['token']);
+          await secureStorage.write(
+              key: 'userToken', value: res.data['tokenUser']);
           var userData = LoginResponseModel.fromJson(res.data);
           var userWalletDetails = res.data['hebronPayWallet'];
 

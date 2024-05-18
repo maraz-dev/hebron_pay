@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/data/model.dart';
 import 'package:hebron_pay/endpoints.dart';
 import 'package:http/http.dart' as http;
@@ -18,11 +19,7 @@ class SetPinRemoteImpl implements SetPinRemote {
     var res = await http.post(
       Uri.parse(setPinEndpoint),
       body: json.encode(mapBody),
-      headers: {
-        'Content-type': 'application/json',
-        'Accept': 'text/plain',
-        'Authorization': 'Bearer ${token!}'
-      },
+      headers: headerFile(token!),
     );
     print(res.statusCode);
     return ResponseModel.fromJson(json.decode(res.body));

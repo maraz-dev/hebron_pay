@@ -1,4 +1,3 @@
-import 'package:hebron_pay/core/domain/entity.dart';
 import 'package:hebron_pay/core/network/network_info.dart';
 import 'package:hebron_pay/features/authentication/data/datasources/email_verification_remote.dart';
 

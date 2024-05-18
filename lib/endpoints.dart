@@ -1,4 +1,4 @@
-const String baseURL = "http://petjohnson-001-site1.ctempurl.com";
+const String baseURL = "http://paulljoseph12-001-site1.htempurl.com";
 
 /// AUTHENTICATION ENDPOINTS
 /// Sign Up Endpoint

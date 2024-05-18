@@ -132,6 +132,7 @@ Map<String, String> headerFile(String? token) {
   return {
     'Content-type': 'application/json',
     'Accept': 'text/plain',
-    'Authorization': 'Bearer ${token!}'
+    'Authorization': 'Basic MTExNzMxODg6NjAtZGF5ZnJlZXRyaWFs',
+    'username': token!
   };
 }

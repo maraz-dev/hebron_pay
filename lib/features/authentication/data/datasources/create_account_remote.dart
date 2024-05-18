@@ -20,6 +20,7 @@ class CreateAccountRemoteDataSourceImpl
       headers: {
         'Content-type': 'application/json',
         'Accept': 'text/plain',
+        'Authorization': 'Basic MTExNzMxODg6NjAtZGF5ZnJlZXRyaWFs'
       },
     );
     print(res.statusCode);

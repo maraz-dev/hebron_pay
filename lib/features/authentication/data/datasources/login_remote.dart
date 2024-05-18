@@ -20,9 +20,10 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
       headers: {
         'Content-type': 'application/json',
         'Accept': 'text/plain',
+        'Authorization': 'Basic MTExNzMxODg6NjAtZGF5ZnJlZXRyaWFs'
       },
     );
-    print(res.statusCode);
+    print(res.body);
     return ResponseModel.fromJson(json.decode(res.body));
   }
 }
