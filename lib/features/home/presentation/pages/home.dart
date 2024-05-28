@@ -385,7 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Pending Transactions',
+                                'Pending Transaction(s)',
                                 style: Theme.of(context)
                                     .textTheme
                                     .displaySmall!
