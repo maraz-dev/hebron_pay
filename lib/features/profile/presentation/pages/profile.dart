@@ -99,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     return _isLoading
                         ? Container()
                         : currentUserEntity == null
-                            ? const Text('')
+                            ? const Text('HebronPay User')
                             : Text(
                                 '${currentUserEntity!.firstName} ${currentUserEntity!.lastName}',
                                 style: Theme.of(context).textTheme.displaySmall,

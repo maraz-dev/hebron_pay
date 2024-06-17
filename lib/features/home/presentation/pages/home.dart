@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -167,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _getPendingTransaction();
                 _getTransaction();
               },
-              child: ListView(
+              child: Column(
                 children: [
                   /// Balance, Withdraw and Deposit Box
                   Container(
@@ -378,7 +379,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          SizedBox(height: getProportionateScreenHeight(15)),
+                          SizedBox(height: getProportionateScreenHeight(30)),
 
                           /// Pending Payments
                           Row(
@@ -434,9 +435,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 pendingTransaction = (state).pendingTrx;
                               }
                               return _isLoading
-                                  ? SpinKitWave(
-                                      color: kPrimaryColor,
-                                      size: getProportionateScreenWidth(25),
+                                  ? Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 20),
+                                      child: SpinKitWave(
+                                        color: kPrimaryColor,
+                                        size: getProportionateScreenWidth(25),
+                                      ),
                                     )
                                   : pendingTransaction!.isEmpty ||
                                           pendingTransaction == null
@@ -504,6 +509,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
 
                           /// Recent Transactions
+                          SizedBox(height: getProportionateScreenHeight(15)),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -556,9 +562,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 transaction = (state).userTrx;
                               }
                               return _isLoading
-                                  ? SpinKitWave(
-                                      color: kPrimaryColor,
-                                      size: getProportionateScreenWidth(25))
+                                  ? Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 20),
+                                      child: SpinKitWave(
+                                          color: kPrimaryColor,
+                                          size:
+                                              getProportionateScreenWidth(25)),
+                                    )
                                   : transaction!.isEmpty || transaction == null
                                       ? Center(
                                           child: Column(
