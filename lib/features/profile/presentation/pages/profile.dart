@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hebron_pay/constants.dart';
 import 'package:hebron_pay/core/bloc/cubit/user_details_cubit.dart';
 import 'package:hebron_pay/core/domain/user_entity.dart';
-import 'package:hebron_pay/features/authentication/domain/entities/login_entity.dart';
 import 'package:hebron_pay/features/authentication/presentation/pages/login.dart';
 import 'package:hebron_pay/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:hebron_pay/features/profile/presentation/pages/change_password.dart';
@@ -153,7 +151,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: 'Terms and Conditions',
                   icon: termsAndConditionIcon,
                   onPressed: () {
-                    Navigator.pushNamed(context, TermsAndConditionScreen.id);
+                    showSuccessSnackBar(context, 'Available in Version 2.0');
+                    //Navigator.pushNamed(context, TermsAndConditionScreen.id);
                   },
                 ),
 
@@ -162,7 +161,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: 'Privacy Policy',
                   icon: privacyIcon,
                   onPressed: () {
-                    Navigator.pushNamed(context, PrivacyPolicyScreen.id);
+                    showSuccessSnackBar(context, 'Available in Version 2.0');
+                    //Navigator.pushNamed(context, PrivacyPolicyScreen.id);
                   },
                 ),
 
@@ -171,7 +171,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: 'Help and Support',
                   icon: helpAndSupportIcon,
                   onPressed: () {
-                    Navigator.pushNamed(context, HelpAndSupportScreen.id);
+                    showSuccessSnackBar(context, 'Available in Version 2.0');
+                    //Navigator.pushNamed(context, HelpAndSupportScreen.id);
                   },
                 ),
                 SizedBox(height: getProportionateScreenHeight(25)),
